@@ -87,7 +87,7 @@ $setup_file = <<<SETUP_FILE
 	</body>
 </html>     
 SETUP_FILE;
-	$archivo = fopen("$proyecto/index.html", 'w') or die('No se pudo crear el archivo readme.html'); 
+	$archivo = fopen("$proyecto/index.html", 'w') or die('No se pudo crear el archivo index.html'); 
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 // CSS
@@ -150,9 +150,9 @@ SETUP_FILE;
 		</p>
 		<h1>Configuración</h1>
 		<p>
-			Este archivo tiene que estar dentro de htdocs y tiene que ser accesible a través de una dirección similar * a: http://localhost/setupPHP/setup.php<br />
+			setup tiene que estar dentro de htdocs y tiene que ser accesible a través de una dirección (URL) similar a:<br />
 			La carpeta que contiene este archivo (setup) debe de contar con permisos para escritura (0777) para poder generar la carpeta con el proyecto.<br />
-			* puede variar si la instalación de XAMPP utiliza otro puerto (8080, 8888)<br />
+			La dirección (URL) puede variar si la instalación de XAMPP utiliza otro puerto (8080, 8888).<br />
 		</p>
 		<p>			
 			Solo es recomendable para generar los archivos en un ambiente de desarrollo local (localhost) pero <b>NO</b> en un servidor que sea accesible a través de internet.
