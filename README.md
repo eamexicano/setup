@@ -17,4 +17,4 @@ Solo es recomendable para generar los archivos en un ambiente de desarrollo loca
 Si mysql es accesible desde la terminal / consola el script va a tratar de generar la BD con el usuario root y sin contraseña (valores predeterminados en xampp).  
 También se va a almacenar el script de creación de la BD dentro de la carpeta db por si no se creó la BD o si se quiere crear en otro lugar.  
 
-Este está liberado bajo una <a href='www.opensource.org/licenses/MIT' target='_blank'>licencia MIT</a>.
+Este está liberado bajo una <a href='http://www.opensource.org/licenses/MIT' target='_blank'>licencia MIT</a>.
