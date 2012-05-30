@@ -19,6 +19,7 @@
 			</div>
 			<div class='content'>  
 <?php
+	require('pluralize.php');
 	$projectName = basename(dirname(dirname(__FILE__)));
 	if (isset($_POST['recurso'])) {
 	$recurso = $_POST['recurso'];
@@ -38,19 +39,63 @@
 		echo $elem[$key] . " " . $elem[$value] . "<br />";					
 		if ($elem[$key] != '') {
 			if ($elem[$value] == 'text') {
-		   		$new_input .= "<label>$elem[$key]</label><br /><textarea name='$elem[$key]'>$elem[$key]</textarea><br />\n";
-		   		$edit_input .= "echo \"<label>$elem[$key]</label><br /><textarea name='$elem[$key]'>\" . \$resultado['$elem[$key]'] . \"</textarea><br />\";\n";					
+		   		$new_input .= "<label>$elem[$key]</label><br /><textarea name='$elem[$key]' placeholder='$elem[$key]'></textarea><br />\n";
+		   		$edit_input .= "echo \"<label>$elem[$key]</label><br /><textarea name='$elem[$key]'>\" . stripslashes(\$resultado['$elem[$key]']) . \"</textarea><br />\";\n";					
+			} elseif(preg_match("/_id+$/i", $elem[$key])) {
+				$sustantivo = str_replace("_id", "", $elem[$key]);
+				$tabla = pluralize($sustantivo);
+				/* new input*/
+$new_input = <<<SOURCE
+<?php
+				require('../config/conexion.php');
+				\$query = "SELECT * FROM $tabla";
+		 		\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+				echo "<label>$elem[$key]</label><br />";
+				echo "<select name='$elem[$key]'>";
+				echo "<option value='0' selected> - Selecciona - </option>";
+				while (\$mostrar = mysql_fetch_row(\$resultado)) { 
+					echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";
+				} 
+				echo "</select><b />";
+?>
+SOURCE;
+                /* new input*/
+$edit_input = <<<SOURCE
+				\$query = "SELECT * FROM $tabla";
+				\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+				echo "<label>$elem[$key]</label><br />";
+				echo "<select name='$elem[$key]'>";
+					echo "<option value='0'> - Selecciona - </option>";
+				while (\$mostrar = mysql_fetch_row(\$resultado)) { 
+					echo "<option value='\$mostrar[0]'";     
+/*					
+Se necesita hacer una consulta para obtener el valor almacenado en: $elem[$key]
+Ya sea utilizar ese o almacenarlo en otra variable y sustituirla en el condicional
+para que cuando se mande llamar el formulario de edición aparezca como seleccionada la opción.
+					if ($elem[$key] == \$mostrar[0]) {
+						echo "selected='selected'";
+					}
+*/
+					echo ">\$mostrar[1]</option>";
+				} 
+				echo "</select><br />";
+SOURCE;
+				
 			} else {
 		   		$new_input .= "<label>$elem[$key]</label><br /><input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br />\n";
 		   		$edit_input .= "echo \"<label>$elem[$key]</label><br /><input type='text' name='$elem[$key]' value='\" . \$resultado['$elem[$key]'] . \"' /><br />\";\n";					
 			}							
-			$show .= "echo \$resultado['$elem[$key]'] . '<br />\n';";
-	   		$sent_params .= "\$$elem[$key] = \$_POST['$elem[$key]'];\n";
+			if (isset($_POST['htmlContent']) && $_POST['htmlContent'] == '1') {			
+				$show .= "echo stripslashes(\$resultado['$elem[$key]']) . '<br />\n';";
+			} else {
+				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]'])) . '<br />\n';";				
+			}
+	   		$sent_params .= "\$$elem[$key] = mysql_real_escape_string(\$_POST['$elem[$key]']);\n";
 	   		$insert_attrs .= "$elem[$key],";
 	   		$insert_vals .= "'\$$elem[$key]',";
 			$update_attrs .= "$elem[$key] = '\$$elem[$key]',";
 		}	   		
-	}
+	}	
 $setup_file = <<<SOURCE
 <!DOCTYPE html>
 <html>
@@ -85,7 +130,7 @@ $setup_file = <<<SOURCE
 			</div>
 		</div>
 		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-		<script src='assets/js/$proyecto.js'></script>
+		<script src='../assets/js/$proyectName.js'></script>
 	</body>
 </html>
 SOURCE;
@@ -108,9 +153,9 @@ $setup_file = <<<SOURCE
 			</div>
 			<a href="index.php">Ver todos</a>
 			<div class='content'>
-				<?php
+				<?php				
 				\$id = \$_GET['id'];
-				\$query = "SELECT * FROM $recurso WHERE id = '\$id'";
+				\$query = sprintf("SELECT * FROM $recurso WHERE id = '%s'", mysql_real_escape_string(\$id));
 				\$resultados = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
 					while (\$resultado = mysql_fetch_array(\$resultados)) { 
 				 	$show;
@@ -124,7 +169,7 @@ $setup_file = <<<SOURCE
 			</div>
 		</div>
 		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-		<script src='assets/js/$proyecto.js'></script>
+		<script src='../assets/js/$proyectName.js'></script>
 	</body>
 </html>
 SOURCE;
@@ -158,7 +203,7 @@ $setup_file = <<<SOURCE
 			</div>
 		</div>
 		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-		<script src='assets/js/$proyecto.js'></script>
+		<script src='../assets/js/$proyectName.js'></script>
 	</body>
 </html>
 SOURCE;
@@ -169,7 +214,7 @@ $setup_file = <<<SOURCE
 <?php
 require '../config/conexion.php';
 $sent_params
-\$date = date('Y-m-d H:i:s');
+\$date = date('Y-m-d H:i:s'); 
 \$query = "INSERT INTO $recurso ($insert_attrs creado, actualizado) VALUES ($insert_vals '\$date', '\$date')";
 \$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
 if (\$completado) {
@@ -218,7 +263,7 @@ $setup_file = <<<SOURCE
 			</div>
 		</div>
 		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-		<script src='assets/js/$proyecto.js'></script>
+		<script src='../assets/js/$proyectName.js'></script>
 	</body>
 </html>  
 SOURCE;
@@ -328,6 +373,7 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			</select><br />       			
 			</div>
 			<input type='button' id='addAttribute' value='Agregar atributo' /><br />
+			<input type='checkbox' name='htmlContent' />Seleccionar si se quiere almacenar contenido en HTML / CSS / JS<br />			
 			<input type='submit' value='Crear recurso' />
 		</form>
 
