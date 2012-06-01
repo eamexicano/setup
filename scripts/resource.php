@@ -23,13 +23,27 @@
 	$projectName = basename(dirname(dirname(__FILE__)));
 	if (isset($_POST['recurso'])) {
 	$recurso = $_POST['recurso'];
-
+    
+	/* Asignar valores del formulario a variables y remover para generar el SQL bien */
 	if (isset($_POST['responsive']) && ($_POST['responsive'] == '1' || $_POST['responsive'] == 'on')) {
 		$responsive = "<link rel='stylesheet' href='../assets/css/responsive.css' type='text/css' />";
 	} else {
 		$responsive = "";
-	}
+	}  
 
+	/* htmlContent */
+	if (isset($_POST['htmlContent']) && ($_POST['htmlContent'] == '1' || $_POST['htmlContent'] == 'on')) {
+		$htmlContent = true;
+	} else {
+		$htmlContent = false;
+	}
+	
+	
+	
+	
+	unset($_POST['responsive']);
+	unset($_POST['htmlContent']);
+	
 	echo "Creando directorios para $recurso <br />\n";
  	mkdir("../$recurso", 0777);
 
@@ -93,7 +107,8 @@ SOURCE;
 		   		$new_input .= "<label>$elem[$key]</label><br /><input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br />\n";
 		   		$edit_input .= "echo \"<label>$elem[$key]</label><br /><input type='text' name='$elem[$key]' value='\" . \$resultado['$elem[$key]'] . \"' /><br />\";\n";					
 			}							
-			if (isset($_POST['htmlContent']) && ($_POST['htmlContent'] == '1' || $_POST['htmlContent'] == 'on')) {
+
+			if (isset($htmlContent) && ($htmlContent == true)) {
 				$show .= "echo stripslashes(\$resultado['$elem[$key]']) . '<br />\n';";
 			} else {
 				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]'])) . '<br />\n';";				
