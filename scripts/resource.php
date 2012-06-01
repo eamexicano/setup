@@ -23,8 +23,16 @@
 	$projectName = basename(dirname(dirname(__FILE__)));
 	if (isset($_POST['recurso'])) {
 	$recurso = $_POST['recurso'];
+
+	if (isset($_POST['responsive']) && ($_POST['responsive'] == '1' || $_POST['responsive'] == 'on')) {
+		$responsive = "<link rel='stylesheet' href='../assets/css/responsive.css' type='text/css' />";
+	} else {
+		$responsive = "";
+	}
+
 	echo "Creando directorios para $recurso <br />\n";
  	mkdir("../$recurso", 0777);
+
 	$elem = $_POST;
 	$show="";
 	$new_input="";
@@ -85,7 +93,7 @@ SOURCE;
 		   		$new_input .= "<label>$elem[$key]</label><br /><input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br />\n";
 		   		$edit_input .= "echo \"<label>$elem[$key]</label><br /><input type='text' name='$elem[$key]' value='\" . \$resultado['$elem[$key]'] . \"' /><br />\";\n";					
 			}							
-			if (isset($_POST['htmlContent']) && $_POST['htmlContent'] == '1') {			
+			if (isset($_POST['htmlContent']) && ($_POST['htmlContent'] == '1' || $_POST['htmlContent'] == 'on')) {
 				$show .= "echo stripslashes(\$resultado['$elem[$key]']) . '<br />\n';";
 			} else {
 				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]'])) . '<br />\n';";				
@@ -102,12 +110,13 @@ $setup_file = <<<SOURCE
 	<head>
 		<meta charset='utf-8' />
 		<link rel="stylesheet" href="../assets/css/$projectName.css" type="text/css" />
+		$responsive
 	</head>
 	<body>
 		<?php require '../config/conexion.php'; ?>
 		<div class='container'>
 			<div class='header'>
-				<h1>$recurso</h1>
+				<h1><a href='../index.php'>$recurso</a></h1>
 			</div>
 			<a href="new.php">Agregar $recurso</a>
 			<div class='content'>
@@ -144,12 +153,13 @@ $setup_file = <<<SOURCE
 	<head>
 		<meta charset='utf-8' />
 		<link rel="stylesheet" href="../assets/css/$projectName.css" type="text/css" />
+		$responsive
 	</head>
 	<body>
 		<?php require '../config/conexion.php'; ?>
 		<div class='container'>
 			<div class='header'>
-				<h1>$recurso</h1>
+				<h1><a href='../index.php'>$recurso</a></h1>
 			</div>
 			<a href="index.php">Ver todos</a>
 			<div class='content'>
@@ -183,11 +193,12 @@ $setup_file = <<<SOURCE
 	<head>
 		<meta charset='utf-8' />
 		<link rel="stylesheet" href="../assets/css/$projectName.css" type="text/css" />
+		$responsive
 	</head>
 	<body>
 		<div class='container'>
 			<div class='header'>
-				<h1>$recurso</h1>
+				<h1><a href='../index.php'>$recurso</a></h1>
 			</div>
 			<a href="index.php">Ver todos</a>
 			<div class='content'>
@@ -234,11 +245,12 @@ $setup_file = <<<SOURCE
 	<head>
 		<meta charset='utf-8' />
 		<link rel="stylesheet" href="../assets/css/$projectName.css" type="text/css" />
+		$responsive
 	</head>
 	<body>
 		<div class='container'>
 			<div class='header'>
-				<h1>$recurso</h1>
+				<h1><a href='../index.php'>$recurso</a></h1>
 			</div>
 			<a href="index.php">Ver todos</a>
 			<div class='content'>
@@ -309,6 +321,11 @@ SOURCE;
 	fwrite($archivo, $setup_file);
 	fclose($archivo);       
 
+if (isset($_POST['responsive']) && $_POST['responsive'] > 0) {
+$setup_file = <<<SOURCE
+SOURCE;
+}
+
 $sql_table = "USE $projectName;\n";          
 $sql_table .= "CREATE TABLE IF NOT EXISTS $recurso (\n";
 $sql_table .= "id int(11) NOT NULL AUTO_INCREMENT,\n";
@@ -344,7 +361,7 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			Este script va a generar:
 		</p>
 		<ul>
-			<li>Un script de creación de una tabla en MySQL (por ahora solo acepta varchar, text e integer).</li>
+			<li>Un script de creación de una tabla en MySQL.</li>
 			<li>Una carpeta con el nombre de la tabla la cual va a contener los siguientes archivos para administrar los registros de esa tabla.</li>
 		</ul>
 		<ul>
@@ -374,6 +391,7 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			</div>
 			<input type='button' id='addAttribute' value='Agregar atributo' /><br />
 			<input type='checkbox' name='htmlContent' />Seleccionar si se quiere almacenar contenido en HTML / CSS / JS<br />			
+			<input type='checkbox' name='responsive' />Crear responsive.css - css que responda al tamaño de la pantalla (ajustar reglas por tamaño).<br />			
 			<input type='submit' value='Crear recurso' />
 		</form>
 

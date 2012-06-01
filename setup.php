@@ -21,7 +21,7 @@
 <?php   
 if (isset($_POST['proyecto'])) {
 	$proyecto = $_POST['proyecto'];
-	echo "Creando directorios para $proyecto";
+	echo "Creando directorios para $proyecto <br />";
 	mkdir("$proyecto", 0777);
 	mkdir("$proyecto/config", 0777, true);
 	mkdir("$proyecto/scripts", 0777, true);
@@ -30,8 +30,37 @@ if (isset($_POST['proyecto'])) {
 	mkdir("$proyecto/assets/css", 0777, true);
 	mkdir("$proyecto/assets/js", 0777, true);
 	mkdir("$proyecto/assets/img", 0777, true);
-	echo "Mostrando directorios para $proyecto";
-	echo exec("ls");
+	// HTML
+$setup_file = <<<SETUP_FILE
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<link rel="stylesheet" href="assets/css/$proyecto.css" type="text/css" />
+	</head>
+	<body>
+		<div class='container'>
+			<div class='header'>
+				<h1>$proyecto</h1>
+			</div>
+			<div class='content'>
+			<h1>Principal</h1>
+			<p>Archivo principal</p>
+			</div>
+			<div class='footer'>
+				<p>
+					&copy; $proyecto
+				</p>
+			</div>
+		</div>
+		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
+		<script src='assets/js/$proyecto.js'></script>
+	</body>
+</html>     
+SETUP_FILE;
+	$archivo = fopen("$proyecto/index.php", 'w') or die('No se pudo crear el archivo index.php');
+	fwrite($archivo, $setup_file);
+	fclose($archivo);
 // HTML
 $setup_file = <<<SETUP_FILE
 <!DOCTYPE html>
@@ -103,13 +132,43 @@ SETUP_FILE;
 	$archivo = fopen("$proyecto/assets/css/$proyecto.css", 'w') or die("No se pudo crear el archivo $proyecto.css");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
+// CSS
+$setup_file = <<< SETUP_FILE
+/* 
+   Responsive CSS
+   1. Utilizar la hoja de estilos del sitio / aplicación normalmente.
+   2. Mandar llamar esta hoja de estilos después de que se cargue la hoja de estilos del sitio.
+   Agregar dentro de cada tamaño de anchura las reglas en CSS que van a modificar valores establecidos en la hoja de estilos inicial.
+   por ejemplo:
+	@media (min-width:1200px){
+		body {width: 1000px; }
+	}
+*/
+@media (min-width:1200px){
+}
+
+@media (min-width:940px){
+}
+
+@media (max-width:940px){
+}
+
+@media (max-width:768px){ 
+}
+
+@media (max-width:480px){
+}                    			
+SETUP_FILE;
+	$archivo = fopen("$proyecto/assets/css/responsive.css", 'w') or die("No se pudo crear el archivo responsive.css");
+	fwrite($archivo, $setup_file);
+	fclose($archivo);
 // JS	
 $setup_file = <<< SETUP_FILE
-	/*
-	AQUÍ VA EL CÓDIGO JS
-	jQuery(document).ready(function($) { 
-  	});
-	*/
+/*
+AQUÍ VA EL CÓDIGO JS
+jQuery(document).ready(function($) { 
+});
+*/
 SETUP_FILE;
 	$archivo = fopen("$proyecto/assets/js/$proyecto.js", 'w') or die("No se pudo crear el archivo $proyecto.js");
 	fwrite($archivo, $setup_file);
@@ -136,7 +195,12 @@ SETUP_FILE;
 	$archivo = fopen("$proyecto/db/$proyecto.sql", 'w') or die("No se pudo crear el archivo $proyecto.sql");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
-	exec("cp resource.php $proyecto/scripts/resource.php");
+// Copiar scripts al proyecto generado
+	exec("cp scripts/index.html $proyecto/scripts/index.html");
+	exec("cp scripts/pluralize.php $proyecto/scripts/pluralize.php");
+	exec("cp scripts/resource.php $proyecto/scripts/resource.php");
+	exec("cp scripts/search.php $proyecto/scripts/search.php");
+// Copiar scripts al proyecto generado
 	if (exec("mysql -u root < db/$proyecto.sql")) {
 		echo "Listo para utilizar.<br />";
 	}  else {
@@ -184,4 +248,4 @@ SETUP_FILE;
 		</div>
 	</div>
 	</body>
-</html>	
+</html>
