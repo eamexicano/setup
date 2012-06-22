@@ -1,5 +1,5 @@
 <?php
-// Cambia la palabra a su plural en español.
+// Cambia la palabra a su plural en español
 function pluralize($string)	{
 	if (preg_match("/[aeiou]+$/i", $string)) {
 		$string .= "s";

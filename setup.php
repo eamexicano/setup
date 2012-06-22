@@ -5,12 +5,12 @@
 		<title>setup</title>
 	</head>
 		<style>
-		body {font-family: 'helvetica neue', helvetica, sans-serif; font-size: 12px; line-height: 1.5; width: 980px; margin: 0 auto; color: #333;}
+		 body {font-family: 'helvetica neue', helvetica, sans-serif; font-size: 12px; line-height: 1.5; width: 980px; margin: 0 auto; color: #333;}
 		.container {width: 860px; margin: auto; }
 		.header {height: 40px; border-bottom: 1px solid #ccc;}
 		.content {padding: 1em 0;}
 		.footer {height: 40px; border-top: 1px solid #ccc; text-align: right; color: #777;}
-		ul {list-style: none;}
+		 ul {list-style: none;}
 		</style>
 	<body>
 	<div class='container'>
@@ -126,7 +126,7 @@ body {font-family: 'helvetica neue', helvetica, sans-serif; font-size: 12px; lin
 .header {height: 40px; border-bottom: 1px solid #ccc;}
 .content {padding: 1em 0;}
 .footer {height: 40px; border-top: 1px solid #ccc; text-align: right; color: #777;}
-/* Muestra los botones / formas como vínculos */
+/* Muestra los botones del formulario como vínculos */
 .linkDisplay {border: none; padding: 0; margin: 0; color: #00E; font-size: inherit; font-family: inherit; text-decoration: underline; background: transparent; display: inline;}
 SETUP_FILE;
 	$archivo = fopen("$proyecto/assets/css/$proyecto.css", 'w') or die("No se pudo crear el archivo $proyecto.css");

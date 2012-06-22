@@ -20,7 +20,8 @@
 			<div class='content'>  
 <?php
 	require('pluralize.php');
-	$projectName = basename(dirname(dirname(__FILE__)));
+//	$projectName = basename(dirname(dirname(__FILE__)));
+	$projectName = basename((dirname(__FILE__));
 	if (isset($_POST['recurso'])) {
 	$recurso = $_POST['recurso'];
     
@@ -37,10 +38,7 @@
 	} else {
 		$htmlContent = false;
 	}
-	
-	
-	
-	
+
 	unset($_POST['responsive']);
 	unset($_POST['htmlContent']);
 	
@@ -61,57 +59,57 @@
 		echo $elem[$key] . " " . $elem[$value] . "<br />";					
 		if ($elem[$key] != '') {
 			if ($elem[$value] == 'text') {
-		   		$new_input .= "<label>$elem[$key]</label><br /><textarea name='$elem[$key]' placeholder='$elem[$key]'></textarea><br />\n";
-		   		$edit_input .= "echo \"<label>$elem[$key]</label><br /><textarea name='$elem[$key]'>\" . stripslashes(\$resultado['$elem[$key]']) . \"</textarea><br />\";\n";					
+		   		$new_input .= "<label>$elem[$key]</label><br />\n<textarea name='$elem[$key]' placeholder='$elem[$key]'></textarea><br />\n";
+		   		$edit_input .= "echo \"<label>$elem[$key]</label><br />\n<textarea name='$elem[$key]'>\" . stripslashes(\$resultado['$elem[$key]']) . \"</textarea><br />\";\n";					
 			} elseif(preg_match("/_id+$/i", $elem[$key])) {
+				$attr_id = $elem[$key];
 				$sustantivo = str_replace("_id", "", $elem[$key]);
 				$tabla = pluralize($sustantivo);
 				/* new input*/
 $new_input = <<<SOURCE
-<?php
+\n<?php
 				require('../config/conexion.php');
 				\$query = "SELECT * FROM $tabla";
 		 		\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
-				echo "<label>$elem[$key]</label><br />";
-				echo "<select name='$elem[$key]'>";
-				echo "<option value='0' selected> - Selecciona - </option>";
-				while (\$mostrar = mysql_fetch_row(\$resultado)) { 
-					echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";
+				echo "<label>$sustantivo</label><br />\n";
+				echo "<select name='$elem[$key]'>\n";
+				echo "<option value='0' selected> - Selecciona - </option>\n";
+				while (\$mostrar = mysql_fetch_array(\$resultado)) { 
+					echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";\n
 				} 
-				echo "</select><b />";
-?>
+				echo "</select><br />\n";
+?>\n
 SOURCE;
                 /* new input*/
 $edit_input = <<<SOURCE
+				 $attr_id = \$resultado['$attr_id'];
 				\$query = "SELECT * FROM $tabla";
-				\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
-				echo "<label>$elem[$key]</label><br />";
+				\$select = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+				echo "<label>$sustantivo</label><br />";
 				echo "<select name='$elem[$key]'>";
-					echo "<option value='0'> - Selecciona - </option>";
-				while (\$mostrar = mysql_fetch_row(\$resultado)) { 
-					echo "<option value='\$mostrar[0]'";     
+				echo "<option value='0'> - Selecciona - </option>";
+				while (\$sekected = mysql_fetch_row(\$select)) { 
+					echo "<option value='\$sekected[0]'";     
 /*					
 Se necesita hacer una consulta para obtener el valor almacenado en: $elem[$key]
 Ya sea utilizar ese o almacenarlo en otra variable y sustituirla en el condicional
 para que cuando se mande llamar el formulario de edición aparezca como seleccionada la opción.
-					if ($elem[$key] == \$mostrar[0]) {
-						echo "selected='selected'";
-					}
+					if ($attr_id == \$selected[0]) { echo "selected='selected'"; }
 */
-					echo ">\$mostrar[1]</option>";
+					echo ">\$selected[1]</option>";
 				} 
 				echo "</select><br />";
 SOURCE;
 				
 			} else {
-		   		$new_input .= "<label>$elem[$key]</label><br /><input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br />\n";
-		   		$edit_input .= "echo \"<label>$elem[$key]</label><br /><input type='text' name='$elem[$key]' value='\" . \$resultado['$elem[$key]'] . \"' /><br />\";\n";					
+		   		$new_input .= "<label>$elem[$key]</label><br />\n<input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br />\n";
+		   		$edit_input .= "echo \"<label>$elem[$key]</label><br />\n<input type='text' name='$elem[$key]' value='\" . \$resultado['$elem[$key]'] . \"' /><br />\";\n";					
 			}							
 
 			if (isset($htmlContent) && ($htmlContent == true)) {
-				$show .= "echo stripslashes(\$resultado['$elem[$key]']) . '<br />\n';";
+				$show .= "echo stripslashes(\$resultado['$elem[$key]']) . '<br />';\n";
 			} else {
-				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]'])) . '<br />\n';";				
+				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]'])) . '<br />';\n";				
 			}
 	   		$sent_params .= "\$$elem[$key] = mysql_real_escape_string(\$_POST['$elem[$key]']);\n";
 	   		$insert_attrs .= "$elem[$key],";

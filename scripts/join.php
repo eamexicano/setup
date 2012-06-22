@@ -43,17 +43,18 @@ $setup_file = <<<SOURCE
 		<form action='$form_action' method='post'>
 		<?php
 		  require '../config/conexion.php';
+		 \$id = \$_GET['\$id'];
+
 		 \$checkboxes = "";
 		 \$index = 0;
 		 \$ids = array();
-		\$id = \$_GET['\$id'];
 		
 		\$select_checked = "SELECT $t2_id FROM $table_name WHERE $t1_id = '\$id'";
 		\$checked = mysql_query(\$select_checked) or die ("No se pudo realizar la consulta. " . mysql_error());
 
 		while(\$id = mysql_fetch_row(\$checked)) {
 			\$ids[\$index] = \$id[0];
-			++\$index;
+			\$index++;
 		}      
 		
 		\$query = "SELECT * FROM $t2";
@@ -89,7 +90,7 @@ $setup_file = <<<SOURCE
 
 	if (isset(\$_POST['$table_name'])) {
 		for(\$i=0; \$i < count(\$_POST['$table_name']); \$i++) {
-			\$query = "INSERT INTO $table_name ($t2_id, $t1_id ) VALUES (" . \$_POST['$t2'][\$i] . ", \$id)";
+			\$query = "INSERT INTO $table_name ($t2_id, $t1_id, creado, actualizado) VALUES ('" . \$_POST['$table_name'][\$i] . "', '\$id', '\$date', '\$date')";
 			\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
 		}
 	}
