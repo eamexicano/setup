@@ -173,7 +173,7 @@ if (isset(\$_POST['sesion'])) {
 				<h3>Autorización</h3>
 				<fieldset>
 					<legend>Iniciar sesión</legend>
-				<form action="sesion.php" method="post" accept-charset="utf-8">
+				<form action="iniciar_sesion.php" method="post" accept-charset="utf-8">
 					<?php
 						if (\$msg <> "")  {
 							echo "<div style='width: 100%; display: block; height: 50px; color: red'>";

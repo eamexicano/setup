@@ -20,11 +20,9 @@
 			<div class='content'>  
 <?php
 	require('pluralize.php');
-//	$projectName = basename(dirname(dirname(__FILE__)));
-	$projectName = basename((dirname(__FILE__));
+	$projectName = basename(dirname(dirname(__FILE__)));
 	if (isset($_POST['recurso'])) {
-	$recurso = $_POST['recurso'];
-    
+	$recurso = $_POST['recurso'];    
 	/* Asignar valores del formulario a variables y remover para generar el SQL bien */
 	if (isset($_POST['responsive']) && ($_POST['responsive'] == '1' || $_POST['responsive'] == 'on')) {
 		$responsive = "<link rel='stylesheet' href='../assets/css/responsive.css' type='text/css' />";
@@ -82,20 +80,20 @@ $new_input = <<<SOURCE
 SOURCE;
                 /* new input*/
 $edit_input = <<<SOURCE
-				 $attr_id = \$resultado['$attr_id'];
+				 \$attr_id = \$resultado['$attr_id'];
 				\$query = "SELECT * FROM $tabla";
 				\$select = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
 				echo "<label>$sustantivo</label><br />";
 				echo "<select name='$elem[$key]'>";
 				echo "<option value='0'> - Selecciona - </option>";
-				while (\$sekected = mysql_fetch_row(\$select)) { 
-					echo "<option value='\$sekected[0]'";     
+				while (\$selected = mysql_fetch_row(\$select)) { 
+					echo "<option value='\$selected[0]'";     
 /*					
 Se necesita hacer una consulta para obtener el valor almacenado en: $elem[$key]
 Ya sea utilizar ese o almacenarlo en otra variable y sustituirla en el condicional
 para que cuando se mande llamar el formulario de edición aparezca como seleccionada la opción.
-					if ($attr_id == \$selected[0]) { echo "selected='selected'"; }
 */
+				if (\$attr_id == \$selected[0]) { echo "selected='selected'"; }
 					echo ">\$selected[1]</option>";
 				} 
 				echo "</select><br />";

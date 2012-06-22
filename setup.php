@@ -195,18 +195,21 @@ SETUP_FILE;
 	$archivo = fopen("$proyecto/db/$proyecto.sql", 'w') or die("No se pudo crear el archivo $proyecto.sql");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
-// Copiar scripts al proyecto generado
-	exec("cp scripts/index.html $proyecto/scripts/index.html");
-	exec("cp scripts/pluralize.php $proyecto/scripts/pluralize.php");
-	exec("cp scripts/resource.php $proyecto/scripts/resource.php");
-	exec("cp scripts/search.php $proyecto/scripts/search.php");
-// Copiar scripts al proyecto generado
+	// Copiar scripts al proyecto generado
+		exec("cp scripts/index.html $proyecto/scripts/index.html");
+		exec("cp scripts/autorizacion.php $proyecto/scripts/autorizacion.php");
+		exec("cp scripts/join.php $proyecto/scripts/join.php");
+		exec("cp scripts/pluralize.php $proyecto/scripts/pluralize.php");
+		exec("cp scripts/resource.php $proyecto/scripts/resource.php");
+		exec("cp scripts/search.php $proyecto/scripts/search.php");
+	// Copiar scripts al proyecto generado
 	if (exec("mysql -u root < db/$proyecto.sql")) {
 		echo "Listo para utilizar.<br />";
 	}  else {
 		echo "Importa $proyecto/db/$proyecto.sql a MySQL.<br />";
 	}
-	echo "¡Hecho!";
+	echo "¡Hecho!"; 
+	echo "Después de importar '$proyecto/db/$proyecto.sql' revisa los <a href='$proyecto/scripts/index.html' target='_blank'>scripts</a> para continuar.";
 } else { ?>
 		<h1>Requerimientos</h1>
 		<p>
@@ -232,7 +235,7 @@ SETUP_FILE;
 					La zona horaria predeterminada es la de la Ciudad de México. Dentro de este archivo viene un vínculo para revisar las zonas horarias disponibles en PHP y ajustar si así se requiere.
 				</li>
 			<li><em>db</em>: Carpeta que tiene el archivo sql para crear la BD. Si se utiliza resource.php ahí se van a guardar los scripts para crear las tablas.</li>
-			<li><em>scripts</em>: Scripts en PHP que agregan funcionalidad (por ahora solo resource.php) </li>
+			<li><em>scripts</em>: Scripts en PHP que agregan funcionalidad</li>
 		</ul>
 		<form action='setup.php' method='post'>
 			<label>Proyecto</label><br />
