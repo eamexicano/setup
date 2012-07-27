@@ -398,6 +398,7 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 				<option value='varchar(255)'>texto (menor a 255 caracteres) / varchar (less than 255 characters)</option>
 				<option value='text'>texto / text</option>
 				<option value='decimal(10,2)'>decimal / decimal</option>
+				<option value='datetime'>fecha / hora</option>
 			</select><br />       			
 			</div>
 			<input type='button' id='addAttribute' value='Agregar atributo' /><br />
@@ -421,7 +422,7 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			$('#addAttribute').click(function() {
 				items += 1;
 				input = "<input type='text' name='attr_" + items + "' placeholder='Atributo' />";
-				input += "<select name='type_" + items + "'><option value='int(11)'>entero / integer</option><option value='varchar(255)'>texto (menor a 255 caracteres) / varchar (less than 255 characters)</option><option value='text'>texto / text</option><option value='decimal(10,2)'>decimal / decimal</option></select><br />";
+				input += "<select name='type_" + items + "'><option value='int(11)'>entero / integer</option><option value='varchar(255)'>texto (menor a 255 caracteres) / varchar (less than 255 characters)</option><option value='text'>texto / text</option><option value='decimal(10,2)'>decimal / decimal</option><option value='datetime'>fecha / hora</option></select><br />";
 				$('#customAttributes').append(input);
 			});
 		  });
