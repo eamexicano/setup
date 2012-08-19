@@ -24,12 +24,16 @@
 	if (isset($_POST['recurso'])) {
 	$recurso = $_POST['recurso'];    
 	/* Asignar valores del formulario a variables y remover para generar el SQL bien */
-	if (isset($_POST['responsive']) && ($_POST['responsive'] == '1' || $_POST['responsive'] == 'on')) {
-		$responsive = "<link rel='stylesheet' href='../assets/css/responsive.css' type='text/css' />";
-	} else {
-		$responsive = "";
+	if (isset($_POST['responsive']) && ($_POST['responsive'] == '1' || $_POST['responsive'] == 'on')) {		
+		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />\n";		
+		$css .= "<link rel='stylesheet' href='../assets/css/responsive.css' type='text/css' />";
+	} else {		
+		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />";
 	}  
-
+	
+	$script = "<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>\n";
+	$script .= "<script src='../assets/js/$projectName.js'></script>";
+	
 	/* htmlContent */
 	if (isset($_POST['htmlContent']) && ($_POST['htmlContent'] == '1' || $_POST['htmlContent'] == 'on')) {
 		$htmlContent = true;
@@ -42,7 +46,8 @@
 	
 	echo "Creando directorios para $recurso <br />\n";
  	mkdir("../$recurso", 0777);
-
+	chmod("../$recurso", 0777);
+	
 	$elem = $_POST;
 	$show="";
 	$new_input="";
@@ -120,8 +125,7 @@ $setup_file = <<<SOURCE
 <html>
 	<head>
 		<meta charset='utf-8' />
-		<link rel="stylesheet" href="../assets/css/$projectName.css" type="text/css" />
-		$responsive
+		$css
 	</head>
 	<body>
 		<?php require '../config/conexion.php'; ?>
@@ -149,8 +153,7 @@ $setup_file = <<<SOURCE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-		<script src='../assets/js/$proyectName.js'></script>
+			$script	
 	</body>
 </html>
 SOURCE;
@@ -162,9 +165,8 @@ $setup_file = <<<SOURCE
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset='utf-8' />
-		<link rel="stylesheet" href="../assets/css/$projectName.css" type="text/css" />
-		$responsive
+		<meta charset='utf-8' />		
+		$css
 	</head>
 	<body>
 		<?php require '../config/conexion.php'; ?>
@@ -189,8 +191,7 @@ $setup_file = <<<SOURCE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-		<script src='../assets/js/$proyectName.js'></script>
+		$script
 	</body>
 </html>
 SOURCE;
@@ -202,9 +203,8 @@ $setup_file = <<<SOURCE
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset='utf-8' />
-		<link rel="stylesheet" href="../assets/css/$projectName.css" type="text/css" />
-		$responsive
+		<meta charset='utf-8' />		
+		$css
 	</head>
 	<body>
 		<div class='container'>
@@ -224,8 +224,7 @@ $setup_file = <<<SOURCE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-		<script src='../assets/js/$proyectName.js'></script>
+		$script
 	</body>
 </html>
 SOURCE;
@@ -255,8 +254,7 @@ $setup_file = <<<SOURCE
 <html>
 	<head>
 		<meta charset='utf-8' />
-		<link rel="stylesheet" href="../assets/css/$projectName.css" type="text/css" />
-		$responsive
+		$css
 	</head>
 	<body>
 		<div class='container'>
@@ -285,8 +283,7 @@ $setup_file = <<<SOURCE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-		<script src='../assets/js/$proyectName.js'></script>
+		$script
 	</body>
 </html>  
 SOURCE;
