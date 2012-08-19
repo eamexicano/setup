@@ -22,7 +22,7 @@
 if (isset($_POST['proyecto'])) {
 	$proyecto = $_POST['proyecto'];
 	echo "Creando directorios para $proyecto <br />";
-	mkdir("$proyecto", 0777);
+	mkdir("$proyecto", 0777, true);
 	mkdir("$proyecto/config", 0777, true);
 	mkdir("$proyecto/scripts", 0777, true);
 	mkdir("$proyecto/db", 0777, true);
@@ -30,6 +30,16 @@ if (isset($_POST['proyecto'])) {
 	mkdir("$proyecto/assets/css", 0777, true);
 	mkdir("$proyecto/assets/js", 0777, true);
 	mkdir("$proyecto/assets/img", 0777, true);
+	// Cambia los directorios a +rwx para que el servidor web pueda escribir los archivos. 
+	chmod("$proyecto", 0777);
+	chmod("$proyecto/config", 0777);
+	chmod("$proyecto/scripts", 0777);
+	chmod("$proyecto/db", 0777);
+	chmod("$proyecto/assets", 0777);
+	chmod("$proyecto/assets/css", 0777);
+	chmod("$proyecto/assets/js", 0777);
+	chmod("$proyecto/assets/img", 0777);
+
 	// HTML
 $setup_file = <<<SETUP_FILE
 <!DOCTYPE html>
