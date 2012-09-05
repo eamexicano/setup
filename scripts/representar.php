@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset='utf-8' />
-		<title>setup - map</title>
+		<title>setup - representar</title>
 	</head>
 	<style>
 	body {font-family: 'helvetica neue', helvetica, sans-serif; font-size: 12px; line-height: 1.5; width: 980px; margin: 0 auto; color: #333;}
@@ -369,7 +369,7 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			Este script va a generar:
 		</p>
 		<ul>
-			<li>Un script de creación de una tabla en MySQL.</li>
+			<li>Un archivo sql para crear una tabla en MySQL.</li>
 			<li>Una carpeta con el nombre de la tabla la cual va a contener los siguientes archivos para administrar los registros de esa tabla.</li>
 		</ul>
 		<ul>
@@ -386,7 +386,7 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			Dentro de la carpeta <?php echo $projectName; ?>
 		</p>
 		<form action='resource.php' method='post'>
-			<label>Recurso</label><br />
+			<label>Tabla</label><br />
 			<input type='text' name='recurso' placeholder='Nombre del recurso'><br />
 			<div id='customAttributes'>
 			<input type='text' name='attr_1' placeholder='Atributo' />
@@ -401,7 +401,7 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			<input type='button' id='addAttribute' value='Agregar atributo' /><br />
 			<input type='checkbox' name='htmlContent' />Seleccionar si se quiere almacenar contenido en HTML / CSS / JS<br />			
 			<input type='checkbox' name='responsive' />Crear responsive.css - css que responda al tamaño de la pantalla (ajustar reglas por tamaño).<br />			
-			<input type='submit' value='Crear recurso' />
+			<input type='submit' value='Crear archivos' />
 		</form>
 
 <?php
