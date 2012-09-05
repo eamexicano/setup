@@ -212,6 +212,7 @@ SETUP_FILE;
 		exec("cp scripts/pluralize.php $proyecto/scripts/pluralize.php");
 		exec("cp scripts/resource.php $proyecto/scripts/resource.php");
 		exec("cp scripts/search.php $proyecto/scripts/search.php");
+		exec("cp scripts/contact.php $proyecto/scripts/contact.php");
 	// Copiar scripts al proyecto generado
 	if (exec("mysql -u root < db/$proyecto.sql")) {
 		echo "Listo para utilizar.<br />";

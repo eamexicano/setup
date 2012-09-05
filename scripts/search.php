@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset='utf-8' />
-		<title>setup</title>
+		<title>setup - search</title>
 	</head>
 	<style>
 	body {font-family: 'helvetica neue', helvetica, sans-serif; font-size: 12px; line-height: 1.5; width: 980px; margin: 0 auto; color: #333;}

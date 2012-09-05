@@ -4,7 +4,7 @@ setup
 Requerimientos
 --------------
 
-Se necesita una instalación de Apache, PHP, MySQL (XAMPP, LAMP, WAMP o intalaciones independientes).
+Se necesita una instalación de Apache, PHP, MySQL (XAMPP, LAMP, WAMP o instalación independiente).
 
 Configuración
 --------------
