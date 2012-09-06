@@ -210,9 +210,9 @@ SETUP_FILE;
 		exec("cp scripts/buscador.php $proyecto/scripts/buscador.php");
 		exec("cp scripts/contacto.php $proyecto/scripts/contacto.php");
 		exec("cp scripts/index.html $proyecto/scripts/index.html");    
-		exec("cp scripts/join.php $proyecto/scripts/join.php");
 		exec("cp scripts/pluralize.php $proyecto/scripts/pluralize.php");
 		exec("cp scripts/representar.php $proyecto/scripts/representar.php");
+		exec("cp scripts/union.php $proyecto/scripts/union.php");
 	// Copiar scripts al proyecto generado
 	if (exec("mysql -u root < db/$proyecto.sql")) {
 		echo "Listo para utilizar.<br />";
