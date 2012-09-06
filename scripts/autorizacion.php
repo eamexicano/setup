@@ -257,7 +257,7 @@ SOURCE;
 	<form action='autorizacion.php' method='post'>
 		<?php echo $msg; ?>
 		<p>
-			Este archivo se encarga de generar un autorización básico que consta de 7 archivos:
+			Este archivo se encarga de generar un proceso de autorización básico que consta de 7 archivos:
 		</p>
 		<ul>
 			<li>autenticacion.php: Verifica que exista un valor establecido en la sesión uid. Si no hay valor establecido redirige el usuario a index.php</li>
@@ -268,6 +268,11 @@ SOURCE;
 			<li>iniciar_sesion.php: Formularios para crear usuarios o iniciar sesión (se pueden copiar e incluir en otro archivo si se quiere modificar la funcionalidad).</li>
 			<li>usuarios.sql: Archivo sql para crear la tabla de usuarios.</li>                                                                                 
 		</ul>
+		<h2>Nota</h2>
+		<p>
+			Las contraseñas se van a cifrar con <b>md5</b><br> 
+			Si tu versión de <b>MySQL es 5.5</b> o mayor se recomienda utilizar <b>SHA2</b>.
+		</p>
 		   <input type='submit' name='autorizacion' value='Crear Archivos' />
 	</form>
 		</div>
