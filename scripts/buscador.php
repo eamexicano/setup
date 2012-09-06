@@ -51,12 +51,10 @@ $setup_file = <<<SOURCE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-		<script src='../assets/js/$proyectName.js'></script>
 	</body>
 </html>
 SOURCE;
-	$archivo = fopen("../busqueda.php", 'w') or die("No se pudo crear el archivo busqueda.php");
+	$archivo = fopen("../buscador.php", 'w') or die("No se pudo crear el archivo busqueda.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 
@@ -92,8 +90,6 @@ $setup_file = <<<SOURCE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-		<script src='../assets/js/$proyectName.js'></script>
 	</body>
 </html>
 SOURCE;
@@ -105,16 +101,27 @@ SOURCE;
 	<p>Se crearon dos archivos:</p>
 	<ul>
 		<li>
-			<em>busquedas.php</em>
-			<p>Formulario de búsquedas (dentro de una página), si solo se quiere el formulario se puede recortar del código lo que está dentro de las siguientes etiquetas.</p>
+			<em>buscador.php</em>
+			<p>
+				Formulario de búsquedas.<br> 
+				Si solo se quiere el formulario  se puede copiar y pegar el código que está dentro de las siguientes etiquetas e incluirlo en otro archivo.<br>
+				Pero el formulario sigue haciendo la consulta y mostrando los resultados encontrados en el archivo resultados.php				
+		  	</p>
 			<p>&lt;!-- Formulario de búsqueda --&gt;</p>
 		</li>
 		<li>
 			<em>resultados.php</em>
 			<p>
-				Archivo que realiza una búsqueda en la BD y muestra los resultados en forma de vínculo.<br />
-				El vínculo <b>NO</b> está asociado a una acción o página para visualizar el contenido de un resultado en particular. 
-				(eso se tiene que hacer).
+				Archivo que realiza una búsqueda en la tabla y campo que se especificaron en el formulario.<br>
+				Muestra los resultados en forma de vínculo.<br>
+				<b>Nota</b><br>
+				En esta página se muestran todos los resultados que se encuentran, no tiene un paginador incluido.<br>
+				El vínculo no está asociado a una acción o página para visualizar el contenido de un resultado en particular.<br >
+			</p>          
+			<p>
+				Si solo se quiere la consulta y muestra de resultados se puede copiar y pegar el código que está dentro de las siguientes etiquetas e incluirlo en otro archivo.<br>
+				&lt;!-- Resultados de Búsqueda --&gt; <br>
+				Si se hace esto hay que actualizar el atributo "action" del formulario para que envíe los valores a otro archivo.
 			</p>
 		 </li>
 	</ul>
@@ -122,8 +129,9 @@ SOURCE;
 <?php 
 } else {
 ?>
-	<h1>Buscador</h1>
-	<form action='search.php' method='post'>
+	<h1>Buscador</h1> 
+	
+	<form action='buscador.php' method='post'>
 		<label>Tabla en la que se va a buscar</label><br />
 		<input type='text' name='tabla' placeholder='tabla'><br />
 
