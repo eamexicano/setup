@@ -67,13 +67,12 @@ $setup_file = <<<SOURCE
 	<html>
 		<head>
 			<meta charset='utf-8' />
+			<link rel='stylesheet' href='assets/css/$projectName.css' type='text/css' />\n
 			<style>
-				.contenedor {display:block;overflow:hidden;width:800px;height:520px;margin:25px auto; padding-top: 3em;}
 				.mensaje {float:left; margin-left: 4em; margin-right: 1em;}
-				.formulario {float: left;}
 				form {margin-top: 3em;}
-				#mensajeUsuario {border-radius: 10px; position: absolute; top: 0; width: 23em; padding: .5em 2em; color: #000; margin: .5em 0;}
-				#valido {border-radius: 10px; position: absolute; top: 0; width; 23em; padding: 1em 2em; color: #000; margin: 2em 0; background: #DFD; border: 1px solid #6C6;}
+				#mensajeUsuario {border-radius: 10px; width: 23em; padding: .5em 2em; color: #000; margin: .5em 0;}
+				#valido {border-radius: 10px; width: 23em; padding: 1em 2em; color: #000; margin: 2em 0; background: #DFD; border: 1px solid #6C6;}
 				input, textarea {display: inline-block; border: 1px solid #ccc; border-radius: 5px; padding: 5px; width: 19em;}
 				label {width: 6em; display: inline-block; padding-top: 1em;}
 				td {vertical-align: top;}
@@ -81,9 +80,19 @@ $setup_file = <<<SOURCE
 			</style>
 		</head>
 		<body> 
-			<div class='contenedor'>
-				<div class='formulario'>
+			<div class='container'>
+				<div class='header'>
+					<h1>$projectName</h1>
+				</div>
+				<div class='content'>
 					<div id='mensajeUsuario' style='display: none;'></div>
+					<?php
+					if (isset(\$mensaje) && \$mensaje == true) {
+						echo "<div id='valido'>";
+						echo "¡Gracias! en breve nos comunicaremos contigo.";
+						echo "</div>";
+					}
+					?>					
 					<form action='contacto.php' method='post' onsubmit='return validar();'>
 						<table>
 							<tr>
@@ -108,19 +117,16 @@ $setup_file = <<<SOURCE
 						   </tr>
 						   <tr>
 								<td>&nbsp;</td>
-								<td><input type='submit' name='enviar' class='enviar' value=''/></td>
+								<td><input type='submit' name='enviar' class='enviar' value='Enviar'/></td>
 						   </tr>
 						</table>
 					</form> 
-					<?php
-					if (isset(\$mensaje) && \$mensaje == true) {
-						echo "<div id='valido'>";
-						echo "¡Gracias! en breve nos comunicaremos contigo.\n";
-						echo "</div>";
-					}
-					?>
-
 					</div>
+					<div class='footer'>
+						<p>
+							&copy; $projectName
+						</p>
+					</div>					
 				</div>
 			<script>
 			function validar() {
@@ -186,7 +192,7 @@ SOURCE;
 } else {
 ?>
 	<h1>Contacto</h1>
-	<form action='contact.php' method='post'>
+	<form action='contacto.php' method='post'>
 		<p>
 			Se va a crear un archivo (contacto.php) en el cual se le va a pedir al usuario sus datos
 			de contacto * (nombre, empresa, teléfono, email, mensaje). <br>
