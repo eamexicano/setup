@@ -385,9 +385,9 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 		<p>
 			Dentro de la carpeta <?php echo $projectName; ?>
 		</p>
-		<form action='resource.php' method='post'>
+		<form action='representar.php' method='post'>
 			<label>Tabla</label><br />
-			<input type='text' name='recurso' placeholder='Nombre del recurso'><br />
+			<input type='text' name='recurso' placeholder='Nombre de la tabla'><br />
 			<div id='customAttributes'>
 			<input type='text' name='attr_1' placeholder='Atributo' />
 			<select name='type_1'>
@@ -400,7 +400,7 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			</div>
 			<input type='button' id='addAttribute' value='Agregar atributo' /><br />
 			<input type='checkbox' name='htmlContent' />Seleccionar si se quiere almacenar contenido en HTML / CSS / JS<br />			
-			<input type='checkbox' name='responsive' />Crear responsive.css - css que responda al tamaño de la pantalla (ajustar reglas por tamaño).<br />			
+			<input type='checkbox' name='responsive' />Vincular con responsive.css - Documentos html sensibles al tamaño de la pantalla (ajustar reglas por tamaño).<br />			
 			<input type='submit' value='Crear archivos' />
 		</form>
 
