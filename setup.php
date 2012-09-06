@@ -206,13 +206,13 @@ SETUP_FILE;
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 	// Copiar scripts al proyecto generado
-		exec("cp scripts/index.html $proyecto/scripts/index.html");
 		exec("cp scripts/autorizacion.php $proyecto/scripts/autorizacion.php");
+		exec("cp scripts/buscador.php $proyecto/scripts/buscador.php");
+		exec("cp scripts/contacto.php $proyecto/scripts/contacto.php");
+		exec("cp scripts/index.html $proyecto/scripts/index.html");    
 		exec("cp scripts/join.php $proyecto/scripts/join.php");
 		exec("cp scripts/pluralize.php $proyecto/scripts/pluralize.php");
-		exec("cp scripts/resource.php $proyecto/scripts/resource.php");
-		exec("cp scripts/search.php $proyecto/scripts/search.php");
-		exec("cp scripts/contact.php $proyecto/scripts/contact.php");
+		exec("cp scripts/representar.php $proyecto/scripts/representar.php");
 	// Copiar scripts al proyecto generado
 	if (exec("mysql -u root < db/$proyecto.sql")) {
 		echo "Listo para utilizar.<br />";
@@ -222,21 +222,25 @@ SETUP_FILE;
 	echo "¡Hecho!"; 
 	echo "Después de importar '$proyecto/db/$proyecto.sql' revisa los <a href='$proyecto/scripts/index.html' target='_blank'>scripts</a> para continuar.";
 } else { ?>
-		<h1>Requerimientos</h1>
+	<h2>Requerimientos</h2>
+	<p>
+		Instalación LAMP (XAMPP, MAMP, WAMP o instalación independiente de Apache, MySQL, PHP).
+	</p>
+	<h2>Instalación</h2>
+	<p>
+	Descargar el archivo .zip<br>
+	Descomprimir dentro de htdocs o carpeta donde se encuentren los proyectos web (como /var/www/http).  <br>
+	Renombrar la carpeta con un nombre corto (setup).<br>
+	Verificar que la carpeta tenga permisos para escritura (0777) para poder generar el proyecto.<br>
+	Iniciar Apache, MySQL y visitar: http://localhost/setup/setup.php<br>
+	</p>
+	<h2>Notas</h2>
+	<p>
+	La dirección (URL) puede variar si la instalación de XAMPP utiliza otro puerto (8080, 8888).   <br>
+	Es recomendable aumentar la seguridad cuando el proyecto se encuentre en un servidor que sea accesible a través de internet (cambiar los permisos de escritura a (0755)).  <br>
+	Si mysql es accesible desde la línea de comandos, algunos scripts va a tratar de generar la BD / tablas con el usuario root y sin contraseña (valores predeterminados en xampp).<br>
+	</p>
 		<p>
-			Se necesita una instalación de Apache, PHP, MySQL (XAMPP, LAMP, WAMP o intalaciones independientes).
-		</p>
-		<h1>Configuración</h1>
-		<p>
-			setup tiene que estar dentro de htdocs y tiene que ser accesible a través de una dirección (URL) similar a:<br />
-			La carpeta que contiene este archivo (setup) debe de contar con permisos para escritura (0777) para poder generar la carpeta con el proyecto.<br />
-			La dirección (URL) puede variar si la instalación de XAMPP utiliza otro puerto (8080, 8888).<br />
-		</p>
-		<p>			
-			Solo es recomendable para generar los archivos en un ambiente de desarrollo local (localhost) pero <b>NO</b> en un servidor que sea accesible a través de internet.
-		</p>
-		<p>
-			Si mysql es accesible desde la terminal / consola el script va a tratar de generar la BD con el usuario root y sin contraseña (valores predeterminados en xampp).<br />
 			También se va a almacenar el script de creación de la BD dentro de la carpeta db por si no se creó la BD o si se quiere crear en otro lugar. <br />			
 		</p> 
 		<ul>

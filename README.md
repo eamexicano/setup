@@ -10,8 +10,8 @@ Instalación
 --------------
 
 Descargar el archivo .zip  
-Descomprimir dentro de htdocs (o carpeta donde se encuentren los proyectos web).  
-Renombrar la carpeta con un nombre corto (como setup).  
+Descomprimir dentro de htdocs o carpeta donde se encuentren los proyectos web (como /var/www/http).  
+Renombrar la carpeta con un nombre corto (setup).  
 Verificar que la carpeta tenga permisos para escritura (0777) para poder generar el proyecto.  
 Iniciar Apache, MySQL y visitar: http://localhost/setup/setup.php  
 
