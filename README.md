@@ -10,7 +10,7 @@ Permite trabajar con las operaciones básicas (crear, leer, actualizar, eliminar
 Recomendaciones de uso
 ----------------------
 
-Las relaciones entre tablas están basadas en las asociaciones de <a href='http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html' target='_blank'>ActiveRecord</a> de <a href='http://www.rubyonrails.org'>Ruby On Rails</a>.  
+Las relaciones entre tablas están basadas en las asociaciones de <a href='http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html' target='_blank'>ActiveRecord</a> de <a href='http://www.rubyonrails.org' target='_blank'>Ruby On Rails</a>.  
   
 Nombre de la tabla en español, plural (usuarios, categorias, productos, documentos, etiquetas).  
 Para nombrar tablas utilizar solo letras minúsculas [a-z], sin acentos o ñ, espacios o guiones.  
