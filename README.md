@@ -1,6 +1,25 @@
 setup
 ======
 
+¿Qué es?
+--------
+
+Generador de archivos (php / sql) desde una interfaz web.  
+Permite trabajar con las operaciones básicas (crear, leer, actualizar, eliminar) de datos en las tablas.  
+
+Recomendaciones de uso
+----------------------
+
+Las relaciones entre tablas están basadas en las asociaciones de <a href='http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html' target='_blank'>ActiveRecord</a> de <a href='http://www.rubyonrails.org'>Ruby On Rails</a>.  
+  
+Nombre de la tabla en español, plural (usuarios, categorias, productos, documentos, etiquetas).  
+Para nombrar tablas utilizar solo letras minúsculas [a-z], sin acentos o ñ, espacios o guiones.  
+  
+Cuando se quiera una clave foránea (FK) para relacionar dos tablas utilizar el nombre de la tabla "independiente" en singular seguido de _id.  
+Ej: Relacionar productos con categorias.  
+Al crear la tabla "productos", agregar una columna llamada categoria\_id.  
+
+
 Requerimientos
 --------------
 

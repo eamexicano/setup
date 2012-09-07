@@ -222,6 +222,24 @@ SETUP_FILE;
 	echo "¡Hecho!"; 
 	echo "Después de importar '$proyecto/db/$proyecto.sql' revisa los <a href='$proyecto/scripts/index.html' target='_blank'>scripts</a> para continuar.";
 } else { ?>
+	<h2>¿Qué es?</h2>
+	<p>
+	Generador de archivos (php / sql) desde una interfaz web.<br>
+	Permite trabajar con las operaciones básicas (crear, leer, actualizar, eliminar) de datos en las tablas.
+	</p>
+	<h2>Recomendaciones de uso</h2>
+	<p>
+		Las relaciones entre tablas están basadas en las asociaciones de <a href='http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html' target='_blank'>ActiveRecord</a> de <a href='http://www.rubyonrails.org'>Ruby On Rails</a>.<br>
+		<ul>
+			<li>Nombre de la tabla en español, plural (usuarios, categorias, productos, documentos, etiquetas).</li>
+			<li>Para nombrar tablas utilizar solo letras minúsculas [a-z], sin acentos o ñ, espacios o guiones.</li>
+			<li>
+				Cuando se quiera una clave foránea (FK) para relacionar dos tablas utilizar el nombre de la tabla "independiente" en singular seguido de _id.<br> 
+				Ej: Relacionar productos con categorias.<br>
+				Al crear la tabla "productos", agregar una columna llamada categoria_id.
+			</li>
+		</ul>
+	</p>
 	<h2>Requerimientos</h2>
 	<p>
 		Instalación LAMP (XAMPP, MAMP, WAMP o instalación independiente de Apache, MySQL, PHP).
