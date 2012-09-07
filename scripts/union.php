@@ -18,8 +18,30 @@
 				<h1>setup</h1>
 			</div>
 			<div class='content'>
-				Join table
-				<form action='system.php' method='post'>
+				<h1>Union</h1>
+				<p>
+					Representación de una relación M:M entre dos tablas.<br>
+					Se va a crear una tabla de unión - join_table - que contiene los ids de la primer y segunda tabla.<br>
+					En la carpeta de la primer tabla se van a almacenar dos archivos.
+				</p>
+				<ol>
+					<li>
+						<p>
+							union.php: Muestra todos los elementos de la tabla2 en un checkbox.<br>
+							Los elementos que se seleccionen van a ser vinculados al elemento seleccionado de la tabla1.<br>
+							
+						</p>
+					</li>
+					<li>
+						<p>
+							update_tabla1_tabla2.php: Se encarga de actualizar los elementos en la BD enviados por el formulario join.php<br>
+							La actualización se realiza en dos pasos.<br>
+							Primero se borran todas las relaciones existentes entre el elemento actual de la tabla1 con TODOS los elementos de la tabla2.<br>
+							Después se vuelven a almacenar los elementos relacionados que fueron enviados en el formulario.<br>
+						</p>
+					</li>
+				</ol>
+				<form action='union.php' method='post'>
 <?php
 	require "../config/conexion.php";
 	$projectName = basename(dirname(dirname(__FILE__)));		
@@ -61,7 +83,7 @@ $setup_file = <<<SOURCE
  		\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
 
 		while (\$mostrar = mysql_fetch_row(\$resultado)) {
-			\$checkboxes .= "<input type='checkbox' name='$table_name_array' value='\$mostrar[0]'"
+			\$checkboxes .= "<input type='checkbox' name='$table_name_array' value='\$mostrar[0]'";
 			for (\$i = 0; \$i < count(\$ids); \$i++) {
 				if (\$ids[\$i] == \$mostrar[0]) {
 					\$checkboxes .= "checked";
@@ -71,13 +93,13 @@ $setup_file = <<<SOURCE
 		} 
 		echo \$checkboxes;		
 ?>                 
-		<input type='hidden' name='id' value='<?php echo $_GET['id'] ?>' />
+		<input type='hidden' name='id' value='<?php echo \$_GET['id'] ?>' />
 		<input type='submit'value='Actualizar' />
 		</form>
 	</body>
 </html>
 SOURCE;
-	$archivo = fopen("../$t1/join.php", 'w') or die("No se pudo crear el archivo join.php");
+	$archivo = fopen("../$t1/union.php", 'w') or die("No se pudo crear el archivo join.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);       
 
@@ -101,7 +123,7 @@ $setup_file = <<<SOURCE
 	}
 	?>
 SOURCE;
-		$archivo = fopen("../$t1/update_join.php", 'w') or die("No se pudo crear el archivo update_join.php");
+		$archivo = fopen("../$t1/$form_action", 'w') or die("No se pudo crear el archivo update_join.php");
 		fwrite($archivo, $setup_file);
 		fclose($archivo);       
 		$sql_table = "USE $projectName;\n";          
