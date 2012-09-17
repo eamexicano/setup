@@ -145,6 +145,7 @@ $setup_file = <<<SOURCE
 					echo "<a href='show.php?id=" . \$resultado['id'] . "'>Ver</a>";
 					echo "<a href='edit.php?id=" . \$resultado['id'] . "'>Editar</a>";
 					echo "<form action='destroy.php' method='post' class='linkDisplay'><input type='hidden' name='id' value='" . \$resultado['id'] . "'/><input type='submit' value='Eliminar' class='linkDisplay' /></form>";
+					echo "<a href='download.php?id=" . \$resultado['id'] . "'>Descargar</a>";
 					echo "<br />";
 				}				
 				?>
@@ -372,6 +373,38 @@ SOURCE;
 	$archivo = fopen("../$recurso/destroy.php", 'w') or die("No se pudo crear el archivo destroy.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);       
+
+$setup_file = <<<SOURCE
+<?php
+require '../config/conexion.php'; 
+
+\$id = \$_GET['id'];
+\$query = sprintf("SELECT * FROM $recurso WHERE id = '%s'", mysql_real_escape_string(\$id));
+\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+
+if (\$completado) {
+	while (\$resultado = mysql_fetch_array(\$completado)) { 
+		\$nombre = \$resultado['file_name'];
+		\$tipo = \$resultado['file_type'];
+	}				
+
+/*
+Content-type => Indicamos al navegador el tipo de archivo que le vamos a enviar.
+Content-Disposition => puede recibir 2 valores (inline, attachment)
+y en filename le damos el nombre del archivo que queremos descargar.
+Aquí le agregué el directorio donde tenemos los archivos almacenados.
+*/
+header("Content-type: \$tipo");
+header("Content-Disposition: attachment; filename='" . \$nombre . "'" );		
+	} else {
+header("location: ./index.php");
+}
+
+?>
+SOURCE;
+	$archivo = fopen("../$recurso/download.php", 'w') or die("No se pudo crear el archivo destroy.php");
+	fwrite($archivo, $setup_file);
+	fclose($archivo);           
 
 if (isset($_POST['responsive']) && $_POST['responsive'] > 0) {
 $setup_file = <<<SOURCE
