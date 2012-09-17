@@ -212,6 +212,7 @@ SETUP_FILE;
 		exec("cp scripts/index.html $proyecto/scripts/index.html");    
 		exec("cp scripts/pluralize.php $proyecto/scripts/pluralize.php");
 		exec("cp scripts/representar.php $proyecto/scripts/representar.php");
+		exec("cp scripts/representar-archivo.php $proyecto/scripts/representar-archivo.php");
 		exec("cp scripts/union.php $proyecto/scripts/union.php");
 	// Copiar scripts al proyecto generado
 	if (exec("mysql -u root < db/$proyecto.sql")) {
