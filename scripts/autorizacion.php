@@ -21,7 +21,15 @@
 
 <?php         
 $msg = "";
+
 if (isset($_POST['autorizacion'])) {
+
+if (isset($_POST['sha']) && $_POST['sha'] == 'on') {
+	$cifrar_con = 'sha';
+} else {
+	$cifrar_con = 'md5';
+}
+
 $projectName = basename(dirname(dirname(__FILE__)));
 // Autenticación
 $setup_file = <<<SOURCE
@@ -126,6 +134,43 @@ SOURCE;
 	$archivo = fopen("../home.php", 'w') or die("No se pudo crear el archivo destroy.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
+
+if ($cifrar_con == 'md5') {
+// Cuenta
+$setup_file = <<<SOURCE
+<?php
+session_start();
+require "config/conexion.php";
+
+\$nombre = \$_POST['nombre'];
+\$email = \$_POST['email'];
+\$password = \$_POST['password'];
+\$confirmacion = \$_POST['confirmacion'];
+\$date = date('Y-m-d H:i:s');
+
+if (\$password == \$confirmacion) {
+	\$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('\$nombre', '\$email', md5('\$password'), '\$date', '\$date')";
+	\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+
+	\$query = "SELECT id FROM usuarios WHERE email = '\$email' AND password = md5('\$password')";
+	\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+
+	while (\$usuario = mysql_fetch_array(\$resultado)) {
+		\$session =  \$usuario['id'];
+		}
+
+		\$_SESSION['uid'] = \$session;			
+		header("location: home.php");
+} else {
+		header("location: index.php");
+}                                      
+
+?> 
+SOURCE;   
+	$archivo = fopen("../cuenta.php", 'w') or die("No se pudo crear el archivo destroy.php");
+	fwrite($archivo, $setup_file);
+	fclose($archivo);
+
 // Sesión
 $setup_file = <<<SOURCE
 <?php
@@ -251,6 +296,172 @@ SOURCE;
 	$archivo = fopen("../db/usuarios.sql", 'w') or die("No se pudo crear el archivo destroy.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
+
+} else {
+// Utilizar SHA2(256,'valor') 
+// Cuenta
+$setup_file = <<<SOURCE
+<?php
+session_start();
+require "config/conexion.php";
+
+\$nombre = \$_POST['nombre'];
+\$email = \$_POST['email'];
+\$password = \$_POST['password'];
+\$confirmacion = \$_POST['confirmacion'];
+\$date = date('Y-m-d H:i:s');
+
+if (\$password == \$confirmacion) {
+	\$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('\$nombre', '\$email', SHA2(256,'\$password'), '\$date', '\$date')";
+	\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+
+	\$query = "SELECT id FROM usuarios WHERE email = '\$email' AND password = SHA2(256,'\$password')";
+	\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+
+	while (\$usuario = mysql_fetch_array(\$resultado)) {
+		\$session =  \$usuario['id'];
+		}
+
+		\$_SESSION['uid'] = \$session;			
+		header("location: home.php");
+} else {
+		header("location: index.php");
+}                                      
+
+?> 
+SOURCE;
+	$archivo = fopen("../cuenta.php", 'w') or die("No se pudo crear el archivo destroy.php");
+	fwrite($archivo, $setup_file);
+	fclose($archivo);
+
+// Sesión
+$setup_file = <<<SOURCE
+<?php
+session_start();
+\$msg = "";
+require "config/conexion.php";
+
+if (isset(\$_POST['sesion'])) {
+		\$email = \$_POST['email'];
+		\$password = \$_POST['password'];
+
+		\$query = "SELECT id, admin FROM usuarios WHERE email = '\$email' AND password = SHA2(256,'\$password')";
+		\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+
+		while (\$usuario = mysql_fetch_array(\$resultado)) {
+			if (isset(\$usuario)) {
+				\$usuario_id =  \$usuario['id']; 
+				\$rol_id = \$usuario['admin']; // Si es administrador nos va a dar un 1, si es usuario normal es 0
+			} 
+		} 	
+
+		if (\$usuario_id) {
+				\$_SESSION['uid'] = \$usuario_id;
+				\$_SESSION['admin'] = \$rol_id;
+				header("location: home.php");
+		} else {
+			\$msg = "El usuario o la contraseña no son correctas. Intenta de nuevo.";
+		}
+}                                               
+
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<link rel="stylesheet" href="assets/css/$projectName.css" type="text/css" />
+	</head>
+	<body>
+		<div class='container'>
+			<div class='header'>
+				<h1><a href='index.php'>$projectName</a></h1>
+			</div>
+
+			<div class='content'>
+				<h3>Autorización</h3>
+				<fieldset>
+					<legend>Iniciar sesión</legend>
+				<form action="iniciar_sesion.php" method="post" accept-charset="utf-8">
+					<?php
+						if (\$msg <> "")  {
+							echo "<div style='width: 100%; display: block; height: 50px; color: red'>";
+								echo \$msg;
+							echo "</div>";
+						}
+					?>
+					<table>
+						<tr>
+							<td><label>email</label></td>
+							<td><input type="text" name="email"></td>
+						</tr>
+						<tr>
+							<td><label>password</label></td>
+							<td><input type="password" name="password"></td>
+						</tr>
+					</table>
+					<input type="submit" value="Iniciar sesión" name='sesion' />
+				</form>
+				</fieldset>
+				<fieldset>
+					<legend>Crear cuenta</legend>
+				<form action="cuenta.php" method="post" accept-charset="utf-8">
+					<table>
+						<tr>
+							<td><label>Nombre Completo:</label></td>
+							<td><input type="text" name="nombre"></td>
+						</tr>
+						<tr>
+							<td><label>Email:</label></td>
+							<td><input type="text" name="email"></td>
+						</tr>
+						<tr>
+							<td><label>Password:</label></td>
+							<td><input type="password" name="password"></td>
+						</tr>
+						<tr>
+							<td><label>Confirmación de Password:</label></td>
+							<td><input type="password" name="confirmacion"></td>
+						</tr>
+				</table>
+								<input type="submit" value="Crear cuenta">
+				</form>
+				</fieldset>
+			</div>
+			<div class='footer'>
+				<p>
+					&copy; $projectName
+				</p>
+			</div>
+		</div>
+		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
+		<script src='assets/js/$proyectName.js'></script>
+	</body>
+</html>
+SOURCE;
+	$archivo = fopen("../iniciar_sesion.php", 'w') or die("No se pudo crear el archivo destroy.php");
+	fwrite($archivo, $setup_file);
+	fclose($archivo);
+
+// usuarios.sql
+$setup_file = <<<SOURCE
+USE $projectName;
+CREATE TABLE IF NOT EXISTS usuarios (
+id int(11) NOT NULL AUTO_INCREMENT,
+nombre varchar(255) NOT NULL,
+email varchar(255) NOT NULL,
+password varchar(255) NOT NULL,
+admin int(11) NOT NULL,
+creado datetime,
+actualizado datetime,
+PRIMARY KEY (id)
+) ENGINE=MyISAM DEFAULT CHARSET=UTF8;
+INSERT INTO usuarios (nombre, email, `password`, admin, creado, actualizado) VALUES ('admin', 'admin@example.com', SHA2(256,'admin'), 1, NOW(), NOW());
+SOURCE;
+	$archivo = fopen("../db/usuarios.sql", 'w') or die("No se pudo crear el archivo destroy.php");
+	fwrite($archivo, $setup_file);
+	fclose($archivo);   
+}  
+
 	$msg = "<div style='color: red;'>¡Hecho!</div>";
 }
 ?>            
@@ -270,8 +481,10 @@ SOURCE;
 		</ul>
 		<h2>Nota</h2>
 		<p>
-			Las contraseñas se van a cifrar con <b>md5</b><br> 
-			Si tu versión de <b>MySQL es 5.5</b> o mayor se recomienda utilizar <b>SHA2</b>.
+			Las contraseñas se van a cifrar con <b>MD5</b><br> 			
+		</p>
+		<p>
+			<input type='checkbox' name='sha' /> Selecciona si tu versión de <b>MySQL es 5.5</b> o mayor y quieres utilizar <b>SHA2</b>.
 		</p>
 		   <input type='submit' name='autorizacion' value='Crear Archivos' />
 	</form>
