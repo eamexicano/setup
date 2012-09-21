@@ -40,6 +40,7 @@ Notas
 La dirección (URL) puede variar si la instalación de XAMPP utiliza otro puerto (8080, 8888).   
 Es recomendable aumentar la seguridad cuando el proyecto se encuentre en un servidor que sea accesible a través de internet (cambiar los permisos de escritura a (0755)).  
 Si mysql es accesible desde la línea de comandos, algunos scripts va a tratar de generar la BD / tablas con el usuario root y sin contraseña (valores predeterminados en xampp).  
+Revisar el <a href='http://www.youtube.com/watch?v=XJrVT7lqJd4' target='_blank'>screencast</a> de uso.
 
 Licencia
 --------
