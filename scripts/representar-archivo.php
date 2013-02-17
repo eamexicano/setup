@@ -44,7 +44,7 @@
 	unset($_POST['responsive']);
 	unset($_POST['htmlContent']);
 	
-	echo "Creando directorios para $recurso <br />\n";
+	echo "Creando directorios para $recurso <br>\n";
  	mkdir("../$recurso", 0777, true);
 	chmod("../$recurso", 0777);
 	mkdir("../assets/$recurso", 0777, true);
@@ -61,11 +61,11 @@
 	for($i=1;$i<count($elem);$i++) {
 		$key = "attr_" . $i;
 		$value = "type_". $i;
-		echo $elem[$key] . " " . $elem[$value] . "<br />";					
+		echo $elem[$key] . " " . $elem[$value] . "<br>";					
 		if ($elem[$key] != '') {
 			if ($elem[$value] == 'text') {
-		   		$new_input .= "<label>$elem[$key]</label><br />\n<textarea name='$elem[$key]' placeholder='$elem[$key]'></textarea><br />\n";
-		   		$edit_input .= "echo \"<label>$elem[$key]</label><br />\n<textarea name='$elem[$key]'>\" . stripslashes(\$resultado['$elem[$key]']) . \"</textarea><br />\";\n";					
+		   		$new_input .= "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]' placeholder='$elem[$key]'></textarea><br>\n";
+		   		$edit_input .= "echo \"<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]'>\" . stripslashes(\$resultado['$elem[$key]']) . \"</textarea><br>\";\n";					
 			} elseif(preg_match("/_id+$/i", $elem[$key])) {
 				$attr_id = $elem[$key];
 				$sustantivo = str_replace("_id", "", $elem[$key]);
@@ -76,13 +76,13 @@ $new_input = <<<SOURCE
 				require('../config/conexion.php');
 				\$query = "SELECT * FROM $tabla";
 		 		\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
-				echo "<label>$sustantivo</label><br />\n";
-				echo "<select name='$elem[$key]'>\n";
-				echo "<option value='0' selected> - Selecciona - </option>\n";
+				echo "<label>$sustantivo</label><br>";
+				echo "<select name='$elem[$key]'>";
+				echo "<option value='0' selected> - Selecciona - </option>";
 				while (\$mostrar = mysql_fetch_array(\$resultado)) { 
-					echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";\n
+					echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";
 				} 
-				echo "</select><br />\n";
+				echo "</select><br>";
 ?>\n
 SOURCE;
                 /* new input*/
@@ -90,7 +90,7 @@ $edit_input = <<<SOURCE
 				 \$attr_id = \$resultado['$attr_id'];
 				\$query = "SELECT * FROM $tabla";
 				\$select = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
-				echo "<label>$sustantivo</label><br />";
+				echo "<label>$sustantivo</label><br>";
 				echo "<select name='$elem[$key]'>";
 				echo "<option value='0'> - Selecciona - </option>";
 				while (\$selected = mysql_fetch_row(\$select)) { 
@@ -103,18 +103,18 @@ para que cuando se mande llamar el formulario de edición aparezca como seleccio
 				if (\$attr_id == \$selected[0]) { echo "selected='selected'"; }
 					echo ">\$selected[1]</option>";
 				} 
-				echo "</select><br />";
+				echo "</select><br>";
 SOURCE;
 				
 			} else {
-		   		$new_input .= "<label>$elem[$key]</label><br />\n<input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br />\n";
-		   		$edit_input .= "echo \"<label>$elem[$key]</label><br />\n<input type='text' name='$elem[$key]' value='\" . \$resultado['$elem[$key]'] . \"' /><br />\";\n";					
+		   		$new_input .= "<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br>\n";
+		   		$edit_input .= "echo \"<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' value='\" . \$resultado['$elem[$key]'] . \"' /><br>\";\n";					
 			}							
 
 			if (isset($htmlContent) && ($htmlContent == true)) {
-				$show .= "echo stripslashes(\$resultado['$elem[$key]']) . '<br />';\n";
+				$show .= "echo stripslashes(\$resultado['$elem[$key]']) . '<br>';\n";
 			} else {
-				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]']),ENT_QUOTES, 'UTF-8') . '<br />';\n";				
+				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]']),ENT_QUOTES, 'UTF-8') . '<br>';\n";				
 			}
 	   		$sent_params .= "\$$elem[$key] = mysql_real_escape_string(\$_POST['$elem[$key]']);\n";
 	   		$insert_attrs .= "$elem[$key],";
@@ -146,7 +146,7 @@ $setup_file = <<<SOURCE
 					echo "<a href='edit.php?id=" . \$resultado['id'] . "'>Editar</a>";
 					echo "<form action='destroy.php' method='post' class='linkDisplay'><input type='hidden' name='id' value='" . \$resultado['id'] . "'/><input type='submit' value='Eliminar' class='linkDisplay' /></form>";
 					echo "<a href='download.php?id=" . \$resultado['id'] . "'>Descargar</a>";
-					echo "<br />";
+					echo "<br>";
 				}				
 				?>
 			</div>
@@ -467,8 +467,8 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			Dentro de la carpeta <?php echo $projectName; ?>
 		</p>
 		<form action='representar-archivo.php' method='post'>
-			<label>Tabla</label><br />
-			<input type='text' name='recurso' placeholder='Nombre de la tabla'><br />
+			<label>Tabla</label><br>
+			<input type='text' name='recurso' placeholder='Nombre de la tabla'><br>
 			<div id='customAttributes'>
 			<input type='text' name='attr_1' placeholder='Atributo' />
 			<select name='type_1'>
@@ -477,11 +477,11 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 				<option value='text'>texto / text</option>
 				<option value='decimal(10,2)'>decimal / decimal</option>
 				<option value='datetime'>fecha / hora</option>
-			</select><br />       			
+			</select><br>       			
 			</div>
-			<input type='button' id='addAttribute' value='Agregar atributo' /><br />
-			<input type='checkbox' name='htmlContent' />Seleccionar si se quiere almacenar contenido en HTML / CSS / JS<br />			
-			<input type='checkbox' name='responsive' />Vincular con responsive.css - Documentos html sensibles al tamaño de la pantalla (ajustar reglas por tamaño).<br />
+			<input type='button' id='addAttribute' value='Agregar atributo' /><br>
+			<input type='checkbox' name='htmlContent' />Seleccionar si se quiere almacenar contenido en HTML / CSS / JS<br>			
+			<input type='checkbox' name='responsive' />Vincular con responsive.css - Documentos html sensibles al tamaño de la pantalla (ajustar reglas por tamaño).<br>
 			<input type='submit' value='Crear archivos' />
 		</form>
 <?php
@@ -499,7 +499,7 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			$('#addAttribute').click(function() {
 				items += 1;
 				input = "<input type='text' name='attr_" + items + "' placeholder='Atributo' />";
-				input += "<select name='type_" + items + "'><option value='int(11)'>entero / integer</option><option value='varchar(255)'>texto (menor a 255 caracteres) / varchar (less than 255 characters)</option><option value='text'>texto / text</option><option value='decimal(10,2)'>decimal / decimal</option><option value='datetime'>fecha / hora</option></select><br />";
+				input += "<select name='type_" + items + "'><option value='int(11)'>entero / integer</option><option value='varchar(255)'>texto (menor a 255 caracteres) / varchar (less than 255 characters)</option><option value='text'>texto / text</option><option value='decimal(10,2)'>decimal / decimal</option><option value='datetime'>fecha / hora</option></select><br>";
 				$('#customAttributes').append(input);
 			});
 		  });
