@@ -114,7 +114,7 @@ SOURCE;
 			if (isset($htmlContent) && ($htmlContent == true)) {
 				$show .= "echo stripslashes(\$resultado['$elem[$key]']) . '<br />';\n";
 			} else {
-				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]'])) . '<br />';\n";				
+				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]']),ENT_QUOTES, 'UTF-8') . '<br />';\n";				
 			}
 	   		$sent_params .= "\$$elem[$key] = mysql_real_escape_string(\$_POST['$elem[$key]']);\n";
 	   		$insert_attrs .= "$elem[$key],";
