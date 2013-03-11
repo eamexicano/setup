@@ -5,12 +5,12 @@
 		<title>setup - representar</title>
 	</head>
 	<style>
-	body {font-family: 'helvetica neue', helvetica, sans-serif; font-size: 12px; line-height: 1.5; width: 980px; margin: 0 auto; color: #333;}
-	.container {width: 860px; margin: auto; }
-	.header {height: 40px; border-bottom: 1px solid #ccc;}
-	.content {padding: 1em 0;}
-	.footer {height: 40px; border-top: 1px solid #ccc; text-align: right; color: #777;} 
-	ul {list-style: none;}	
+	body { font-family: 'helvetica neue', helvetica, sans-serif; font-size: 12px; line-height: 1.5; width: 980px; margin: 0 auto; color: #333; }
+	.container { width: 860px; margin: auto; }
+	.header { height: 40px; border-bottom: 1px solid #ccc; }
+	.content { padding: 1em 0; }
+	.footer { height: 40px; border-top: 1px solid #ccc; text-align: right; color: #777; } 
+	ul { list-style: none; }	
 	</style>
 	<body>
 		<div class='container'>
@@ -23,7 +23,7 @@
 	$projectName = basename(dirname(dirname(__FILE__)));
 	if (isset($_POST['recurso'])) {
 	$recurso = $_POST['recurso'];    
-	/* Asignar valores del formulario a variables y remover para generar el SQL bien */
+
 	if (isset($_POST['responsive']) && ($_POST['responsive'] == '1' || $_POST['responsive'] == 'on')) {		
 		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />\n";		
 		$css .= "<link rel='stylesheet' href='../assets/css/responsive.css' type='text/css' />";
@@ -51,10 +51,12 @@
 	$elem = $_POST;
 	$show="";
 	$new_input="";
+  $tmp_new_input="";
 	$sent_params="";
 	$insert_attrs="";
 	$insert_vals="";
 	$edit_input="";
+	$tmp_edit_input="";
 	$update_attrs = "";
 	for($i=1;$i<count($elem);$i++) {
 		$key = "attr_" . $i;
@@ -69,29 +71,30 @@
 				$sustantivo = str_replace("_id", "", $elem[$key]);
 				$tabla = pluralize($sustantivo);
 				/* new input*/
-$new_input = <<<SOURCE
+$tmp_new_input = <<<SOURCE
 \n<?php
 				require('../config/conexion.php');
 				\$query = "SELECT * FROM $tabla";
-		 		\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+		 		\$resultado = \$conexion->query(\$query);	
 				echo "<label>$sustantivo</label><br>";
 				echo "<select name='$elem[$key]'>";
 				echo "<option value='0' selected> - Selecciona - </option>";
-				while (\$mostrar = mysql_fetch_array(\$resultado)) { 
+				while (\$mostrar = \$resultado->fetch_array()) { 
 					echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";
 				} 
 				echo "</select><br>";
 ?>\n
 SOURCE;
+$new_input .= $tmp_new_input;
                 /* new input*/
-$edit_input = <<<SOURCE
+$tmp_edit_input = <<<SOURCE
 				 \$attr_id = \$resultado['$attr_id'];
 				\$query = "SELECT * FROM $tabla";
-				\$select = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+				\$select = \$conexion->query(\$query);	
 				echo "<label>$sustantivo</label><br>";
 				echo "<select name='$elem[$key]'>";
 				echo "<option value='0'> - Selecciona - </option>";
-				while (\$selected = mysql_fetch_row(\$select)) { 
+				while (\$selected = \$select->fetch_array()) { 
 					echo "<option value='\$selected[0]'";     
 /*					
 Se necesita hacer una consulta para obtener el valor almacenado en: $elem[$key]
@@ -103,7 +106,7 @@ para que cuando se mande llamar el formulario de edición aparezca como seleccio
 				} 
 				echo "</select><br>";
 SOURCE;
-				
+$edit_input .= $tmp_edit_input;				
 			} else {
 		   		$new_input .= "<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br>\n";
 		   		$edit_input .= "echo \"<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' value='\" . \$resultado['$elem[$key]'] . \"' /><br>\";\n";					
@@ -114,7 +117,7 @@ SOURCE;
 			} else {
 				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]']),ENT_QUOTES, 'UTF-8') . '<br>';\n";				
 			}
-	   		$sent_params .= "\$$elem[$key] = mysql_real_escape_string(\$_POST['$elem[$key]']);\n";
+	   		$sent_params .= "\$$elem[$key] = \$_POST['$elem[$key]'];\n";
 	   		$insert_attrs .= "$elem[$key],";
 	   		$insert_vals .= "'\$$elem[$key]',";
 			$update_attrs .= "$elem[$key] = '\$$elem[$key]',";
@@ -137,8 +140,8 @@ $setup_file = <<<SOURCE
 			<div class='content'>
 				<?php
 				\$query = "SELECT * FROM $recurso";
-				\$resultados = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
-					while (\$resultado = mysql_fetch_array(\$resultados)) { 
+				\$resultados = \$conexion->query(\$query);
+					while (\$resultado = \$resultados->fetch_array()) { 
   					$show
 					echo "<a href='show.php?id=" . \$resultado['id'] . "'>Ver</a>";
 					echo "<a href='edit.php?id=" . \$resultado['id'] . "'>Editar</a>";
@@ -178,9 +181,9 @@ $setup_file = <<<SOURCE
 			<div class='content'>
 				<?php				
 				\$id = \$_GET['id'];
-				\$query = sprintf("SELECT * FROM $recurso WHERE id = '%s'", mysql_real_escape_string(\$id));
-				\$resultados = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
-					while (\$resultado = mysql_fetch_array(\$resultados)) { 
+				\$query = "SELECT * FROM $recurso WHERE id = '\$id'";
+				\$resultados = \$conexion->query(\$query);
+					while (\$resultado = \$resultados->fetch_array()) { 
 				 	$show
 				}				
 				?>
@@ -237,7 +240,7 @@ require '../config/conexion.php';
 $sent_params
 \$date = date('Y-m-d H:i:s'); 
 \$query = "INSERT INTO $recurso ($insert_attrs creado, actualizado) VALUES ($insert_vals '\$date', '\$date')";
-\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+\$completado = \$conexion->query(\$query);
 if (\$completado) {
 	header("location: ./index.php");
 } else {
@@ -268,8 +271,8 @@ $setup_file = <<<SOURCE
 			<?php
 			\$id = \$_GET['id'];
 			\$query = "SELECT * FROM $recurso WHERE id = '\$id'";
-			\$resultados = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
-				while (\$resultado = mysql_fetch_array(\$resultados)) { 
+			\$resultados = \$conexion->query(\$query);
+				while (\$resultado = \$resultados->fetch_array()) { 
 				$edit_input
 			 	echo "<input type='hidden' name='id' value='\$id'>";  
 			}				
@@ -298,7 +301,7 @@ require '../config/conexion.php';
 $sent_params
 \$date = date('Y-m-d H:i:s');
 \$query = "UPDATE $recurso SET  $update_attrs actualizado = '\$date' WHERE id = '\$id'"; 
-\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+\$completado = \$conexion->query(\$query);
 if (\$completado) {
 	header("location: ./index.php");
 } else {
@@ -317,7 +320,7 @@ $setup_file = <<<SOURCE
 require '../config/conexion.php';
 \$id = \$_POST['id'];
 \$query = "DELETE FROM $recurso WHERE id = '\$id'";
-\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+\$completado = \$conexion->query(\$query);
 if (\$completado) {
 	header("location: ./index.php");
 } else {

@@ -186,12 +186,10 @@ SETUP_FILE;
 // CONEXIÓN
 $setup_file = <<< SETUP_FILE
 <?php
-	/* http://www.php.net/manual/en/timezones.php */
-	date_default_timezone_set('America/Mexico_City');
-	\$conexion = mysql_connect("127.0.0.1", "root","") or die ("Revisa host, usuario y password. " . mysql_error());
-	\$db = mysql_select_db("$proyecto") or die("Revisa el nombre de tu BD. " . mysql_error());
-	mysql_query("SET NAMES UTF8");
-	mysql_query("SET CHARACTER SET utf8");
+  date_default_timezone_set('America/Mexico_City');
+  \$conexion = new mysqli("127.0.0.1", "root","", "tutoriales");
+  \$conexion->query("SET NAMES UTF8");
+  \$conexion->query("SET CHARACTER SET utf8");
 ?>
 SETUP_FILE;
 	$archivo = fopen("$proyecto/config/conexion.php", 'w') or die("No se pudo crear el archivo conexion.php");
