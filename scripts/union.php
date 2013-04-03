@@ -72,17 +72,17 @@ $setup_file = <<<SOURCE
 		 \$ids = array();
 		
 		\$select_checked = "SELECT $t2_id FROM $table_name WHERE $t1_id = '\$id'";
-		\$checked = mysql_query(\$select_checked) or die ("No se pudo realizar la consulta. " . mysql_error());
+		\$checked = \$conexion->query(\$select_checked);
 
-		while(\$id = mysql_fetch_row(\$checked)) {
+		while(\$id = \$checked->fetch_array()) {
 			\$ids[\$index] = \$id[0];
 			\$index++;
 		}      
 		
 		\$query = "SELECT * FROM $t2";
- 		\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+ 		\$resultado = \$conexion->query(\$query);
 
-		while (\$mostrar = mysql_fetch_row(\$resultado)) {
+		while (\$mostrar = \$resultado->fetch_array()) {
 			\$checkboxes .= "<input type='checkbox' name='$table_name_array' value='\$mostrar[0]'";
 			for (\$i = 0; \$i < count(\$ids); \$i++) {
 				if (\$ids[\$i] == \$mostrar[0]) {
@@ -108,12 +108,12 @@ $setup_file = <<<SOURCE
 	require "../config/conexion.php";
 	\$id = \$_POST['id'];
 	\$query = "DELETE FROM $table_name WHERE $t1_id = '\$id'";
-	\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());		
+	\$completado = \$conexion->query(\$query);
 
 	if (isset(\$_POST['$table_name'])) {
 		for(\$i=0; \$i < count(\$_POST['$table_name']); \$i++) {
 			\$query = "INSERT INTO $table_name ($t2_id, $t1_id, creado, actualizado) VALUES ('" . \$_POST['$table_name'][\$i] . "', '\$id', '\$date', '\$date')";
-			\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+			\$completado = \$conexion->query(\$query);
 		}
 	}
 	if (\$completado) {

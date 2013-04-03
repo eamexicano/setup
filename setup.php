@@ -187,7 +187,7 @@ SETUP_FILE;
 $setup_file = <<< SETUP_FILE
 <?php
   date_default_timezone_set('America/Mexico_City');
-  \$conexion = new mysqli("127.0.0.1", "root","", "tutoriales");
+  \$conexion = new mysqli("127.0.0.1", "root","", "$proyecto");
   \$conexion->query("SET NAMES UTF8");
   \$conexion->query("SET CHARACTER SET utf8");
 ?>

@@ -22,7 +22,7 @@
 	$projectName = basename(dirname(dirname(__FILE__)));
 if (isset($_POST['submit']) && isset($_POST['email'])) {
 
-	$email_receiver = $_POST['email'];
+$email_receiver = $_POST['email'];
 
 $setup_file = <<<SOURCE
     <?php
@@ -162,8 +162,6 @@ $setup_file = <<<SOURCE
 				} else {
 					mensaje.style.border = "1px solid #CCC";
 				}
-
-
 
 				if (errores > 0) {
 					mensajeUsuario.innerHTML = "<p>" + mensajeError + "</p>";

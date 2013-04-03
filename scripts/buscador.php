@@ -39,7 +39,7 @@ $setup_file = <<<SOURCE
 			</div>
 			<div class='content'>
 				<!-- Formulario de búsqueda -->
-                 	<form action='resultados.php' method='get'>
+        <form action='resultados.php' method='get'>
 					<input type='text' name='q' /><br />
 					<input type='submit' value='Buscar' />
 				</form>
@@ -74,12 +74,11 @@ $setup_file = <<<SOURCE
 			<div class='content'>
 			<!-- Resultados de Búsqueda -->
 			<?php
-			\$q = mysql_real_escape_string(\$_GET['q']);
+			\$q = \$_GET['q'];
 			\$query = "SELECT * FROM $tabla WHERE $atributo LIKE '%\$q%'";
-			\$resultados = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
-			while (\$resultado = mysql_fetch_array(\$resultados)) { 
-				echo "<a href='#'>" . \$resultado['$atributo'] . "</a>";
-				echo "<br />";
+			\$resultados = \$conexion->query(\$query);
+			while (\$resultado = \$resultados->fetch_array()) { 
+				echo "<a href='#'>" . \$resultado['$atributo'] . "</a><br />";
 			}				
 			?>
 			<!-- Resultados de Búsqueda -->

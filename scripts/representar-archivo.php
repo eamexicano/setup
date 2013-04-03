@@ -22,90 +22,89 @@
 	require('pluralize.php');
 	$projectName = basename(dirname(dirname(__FILE__)));
 	if (isset($_POST['recurso'])) {
-	$recurso = $_POST['recurso'];    
-	/* Asignar valores del formulario a variables y remover para generar el SQL bien */
-	if (isset($_POST['responsive']) && ($_POST['responsive'] == '1' || $_POST['responsive'] == 'on')) {		
-		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />\n";		
-		$css .= "<link rel='stylesheet' href='../assets/css/responsive.css' type='text/css' />";
-	} else {		
-		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />";
-	}  
+	  $recurso = $_POST['recurso'];    
+	  /* Asignar valores del formulario a variables y remover para generar el SQL bien */
+  	if (isset($_POST['responsive']) && ($_POST['responsive'] == '1' || $_POST['responsive'] == 'on')) {
+  		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />\n";		
+  		$css .= "<link rel='stylesheet' href='../assets/css/responsive.css' type='text/css' />";
+  	} else {		
+  		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />";
+  	}  
 	
-	$script = "<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>\n";
-	$script .= "<script src='../assets/js/$projectName.js'></script>";
+  	$script = "<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>\n";
+  	$script .= "<script src='../assets/js/$projectName.js'></script>";
 	
-	/* htmlContent */
-	if (isset($_POST['htmlContent']) && ($_POST['htmlContent'] == '1' || $_POST['htmlContent'] == 'on')) {
-		$htmlContent = true;
-	} else {
-		$htmlContent = false;
-	}
+  	/* htmlContent */
+  	if (isset($_POST['htmlContent']) && ($_POST['htmlContent'] == '1' || $_POST['htmlContent'] == 'on')) {
+  		$htmlContent = true;
+  	} else {
+  		$htmlContent = false;
+  	}
 
-	unset($_POST['responsive']);
-	unset($_POST['htmlContent']);
+  	unset($_POST['responsive']);
+  	unset($_POST['htmlContent']);
 	
-	echo "Creando directorios para $recurso <br>\n";
- 	mkdir("../$recurso", 0777, true);
-	chmod("../$recurso", 0777);
-	mkdir("../assets/$recurso", 0777, true);
-	chmod("../assets/$recurso", 0777);	
+  	echo "Creando directorios para $recurso <br>\n";
+   	mkdir("../$recurso", 0777, true);
+  	chmod("../$recurso", 0777);
+  	mkdir("../assets/$recurso", 0777, true);
+  	chmod("../assets/$recurso", 0777);	
 
-	$elem = $_POST;
-	$show="";
-	$new_input="";
-	$sent_params="";
-	$insert_attrs="";
-	$insert_vals="";
-	$edit_input="";
-	$update_attrs = "";
+  	$elem = $_POST;
+  	$show="";
+  	$new_input="";
+  	$sent_params="";
+  	$insert_attrs="";
+  	$insert_vals="";
+  	$edit_input="";
+  	$update_attrs = "";    
+
 	for($i=1;$i<count($elem);$i++) {
 		$key = "attr_" . $i;
 		$value = "type_". $i;
-		echo $elem[$key] . " " . $elem[$value] . "<br>";					
+
 		if ($elem[$key] != '') {
 			if ($elem[$value] == 'text') {
-		   		$new_input .= "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]' placeholder='$elem[$key]'></textarea><br>\n";
-		   		$edit_input .= "echo \"<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]'>\" . stripslashes(\$resultado['$elem[$key]']) . \"</textarea><br>\";\n";					
+		   	$new_input .= "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]' placeholder='$elem[$key]'></textarea><br>\n";
+		   	$edit_input .= "echo \"<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]'>\" . stripslashes(\$resultado['$elem[$key]']) . \"</textarea><br>\";\n";					
 			} elseif(preg_match("/_id+$/i", $elem[$key])) {
 				$attr_id = $elem[$key];
 				$sustantivo = str_replace("_id", "", $elem[$key]);
 				$tabla = pluralize($sustantivo);
-				/* new input*/
-$new_input = <<<SOURCE
+/* new input*/
+$new_input .= <<<SOURCE
 \n<?php
-				require('../config/conexion.php');
-				\$query = "SELECT * FROM $tabla";
-		 		\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
-				echo "<label>$sustantivo</label><br>";
-				echo "<select name='$elem[$key]'>";
-				echo "<option value='0' selected> - Selecciona - </option>";
-				while (\$mostrar = mysql_fetch_array(\$resultado)) { 
-					echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";
-				} 
-				echo "</select><br>";
+		require('../config/conexion.php');
+		\$query = "SELECT * FROM $tabla";
+ 		\$resultado = \$conexion->query(\$query);	
+		echo "<label>$sustantivo</label><br>";
+		echo "<select name='$elem[$key]'>";
+		echo "<option value='0' selected> - Selecciona - </option>";
+		while (\$mostrar = \$resultado->fetch_array()) { 
+			echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";
+		} 
+		echo "</select><br>";
 ?>\n
 SOURCE;
-                /* new input*/
-$edit_input = <<<SOURCE
-				 \$attr_id = \$resultado['$attr_id'];
-				\$query = "SELECT * FROM $tabla";
-				\$select = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
-				echo "<label>$sustantivo</label><br>";
-				echo "<select name='$elem[$key]'>";
-				echo "<option value='0'> - Selecciona - </option>";
-				while (\$selected = mysql_fetch_row(\$select)) { 
-					echo "<option value='\$selected[0]'";     
-/*					
-Se necesita hacer una consulta para obtener el valor almacenado en: $elem[$key]
-Ya sea utilizar ese o almacenarlo en otra variable y sustituirla en el condicional
-para que cuando se mande llamar el formulario de edición aparezca como seleccionada la opción.
-*/
-				if (\$attr_id == \$selected[0]) { echo "selected='selected'"; }
-					echo ">\$selected[1]</option>";
-				} 
-				echo "</select><br>";
+
+/* edit input*/
+$edit_input .= <<<SOURCE
+    \$attr_id = \$resultado['$attr_id'];
+  	\$query = "SELECT * FROM $tabla";
+  	\$select = \$conexion->query(\$query);	
+  	echo "<label>$sustantivo</label><br>";
+  	echo "<select name='$elem[$key]'>";
+  	echo "<option value='0'> - Selecciona - </option>";
+  	while (\$selected = \$select->fetch_array()) {
+  	  echo "<option value='\$selected[0]'";     
+  		if (\$attr_id == \$selected[0]) {
+  		    echo "selected='selected'"; 
+  		}
+ 			echo ">\$selected[1]</option>";
+  	} 
+  	echo "</select><br>";
 SOURCE;
-				
+
 			} else {
 		   		$new_input .= "<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br>\n";
 		   		$edit_input .= "echo \"<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' value='\" . \$resultado['$elem[$key]'] . \"' /><br>\";\n";					
@@ -116,12 +115,13 @@ SOURCE;
 			} else {
 				$show .= "echo htmlentities(stripslashes(\$resultado['$elem[$key]']),ENT_QUOTES, 'UTF-8') . '<br>';\n";				
 			}
-	   		$sent_params .= "\$$elem[$key] = mysql_real_escape_string(\$_POST['$elem[$key]']);\n";
+	   		$sent_params .= "\$$elem[$key] = \$_POST['$elem[$key]'];\n";
 	   		$insert_attrs .= "$elem[$key],";
 	   		$insert_vals .= "'\$$elem[$key]',";
-			$update_attrs .= "$elem[$key] = '\$$elem[$key]',";
+			  $update_attrs .= "$elem[$key] = '\$$elem[$key]',";
 		}	   		
-	}	
+	}
+	
 $setup_file = <<<SOURCE
 <!DOCTYPE html>
 <html>
@@ -139,8 +139,8 @@ $setup_file = <<<SOURCE
 			<div class='content'>
 				<?php
 				\$query = "SELECT * FROM $recurso";
-				\$resultados = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
-					while (\$resultado = mysql_fetch_array(\$resultados)) { 
+				\$resultados = \$conexion->query(\$query);
+					while (\$resultado = \$resultados->fetch_array()) { 
   					$show
 					echo "<a href='show.php?id=" . \$resultado['id'] . "'>Ver</a>";
 					echo "<a href='edit.php?id=" . \$resultado['id'] . "'>Editar</a>";
@@ -181,9 +181,9 @@ $setup_file = <<<SOURCE
 			<div class='content'>
 				<?php				
 				\$id = \$_GET['id'];
-				\$query = sprintf("SELECT * FROM $recurso WHERE id = '%s'", mysql_real_escape_string(\$id));
-				\$resultados = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
-					while (\$resultado = mysql_fetch_array(\$resultados)) { 
+				\$query = "SELECT * FROM $recurso WHERE id = '\$id'";
+				\$resultados = \$conexion->query(\$query);
+					while (\$resultado = \$resultados->fetch_array()) { 
 				 	$show;
 				}				
 				?>
@@ -249,7 +249,7 @@ $sent_params
 
 if (move_uploaded_file(\$nombre_temporal, "../assets/$recurso/\$file_name")) {
 	\$query = "INSERT INTO $recurso($insert_attrs file_name, file_type, file_size, creado, actualizado) VALUES ($insert_vals '\$file_name', '\$file_type', '\$file_size', '\$date', '\$date')";	
-	\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+	\$completado = \$conexion->query(\$query);
 	if (\$completado) {
 		header("location: ./index.php");
 	} else {
@@ -283,8 +283,8 @@ $setup_file = <<<SOURCE
 			<?php
 			\$id = \$_GET['id'];
 			\$query = "SELECT * FROM $recurso WHERE id = '\$id'";
-			\$resultados = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
-				while (\$resultado = mysql_fetch_array(\$resultados)) { 
+			\$resultados = \$conexion->query(\$query);
+				while (\$resultado = \$resultados->fetch_array()) { 
 				$edit_input
 			 	echo "<input type='hidden' name='id' value='\$id'>";  
 				echo "<input type='hidden' name='eliminar' value='" . \$resultado['file_name'] . "'>";
@@ -327,7 +327,7 @@ $sent_params
 
 if (move_uploaded_file(\$uploadFile, "../assets/$recurso/\$file_name") && unlink("../assets/$recurso/" . \$eliminar)) {
 	\$query = "UPDATE $recurso SET  $update_attrs file_name = '\$file_name', file_size = '\$file_size', file_type = '\$file_type', actualizado = '\$date' WHERE id = '\$id'";
-	\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+	\$completado = \$conexion->query(\$query);
 	if (\$completado) {
 		header("location: ./index.php");
 	} else {
@@ -335,7 +335,7 @@ if (move_uploaded_file(\$uploadFile, "../assets/$recurso/\$file_name") && unlink
 	}
 } else {
 	\$query = "UPDATE $recurso SET  $update_attrs actualizado = '\$date' WHERE id = '\$id'"; 
-	\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+	\$completado = \$conexion->query(\$query);
 	if (\$completado) {
 		header("location: ./index.php");
 	} else {
@@ -356,13 +356,13 @@ $setup_file = <<<SOURCE
 <?php
 require '../config/conexion.php';
 \$id = \$_POST['id'];
-\$query = sprintf("SELECT * FROM $recurso WHERE id = '%s'", mysql_real_escape_string(\$id));
-\$resultados = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
-	while (\$resultado = mysql_fetch_array(\$resultados)) { 
+\$query = "SELECT * FROM $recurso WHERE id = '\$id'";
+\$resultados = \$conexion->query(\$query);
+	while (\$resultado = \$resultados->fetch_array()) { 
 		unlink("../assets/$recurso/" .  \$resultado['file_name']);
 	}				
 \$query = "DELETE FROM $recurso WHERE id = '\$id'";  
-\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+\$completado = \$conexion->query(\$query);
 if (\$completado) {
 	header("location: ./index.php");
 } else {
@@ -379,11 +379,11 @@ $setup_file = <<<SOURCE
 require '../config/conexion.php'; 
 
 \$id = \$_GET['id'];
-\$query = sprintf("SELECT * FROM $recurso WHERE id = '%s'", mysql_real_escape_string(\$id));
-\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+\$query = "SELECT * FROM $recurso WHERE id = '\$id'";
+\$completado = \$conexion->query(\$query);
 
 if (\$completado) {
-	while (\$resultado = mysql_fetch_array(\$completado)) { 
+	while (\$resultado = \$completado->fetch_array()) { 
 		\$nombre = \$resultado['file_name'];
 		\$tipo = \$resultado['file_type'];
 	}				

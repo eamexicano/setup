@@ -78,12 +78,12 @@ require "config/conexion.php";
 
 if (\$password == \$confirmacion) {
 	\$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('\$nombre', '\$email', md5('\$password'), '\$date', '\$date')";
-	\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+	\$completado = \$conexion->query(\$query);
 
 	\$query = "SELECT id FROM usuarios WHERE email = '\$email' AND password = md5('\$password')";
-	\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+	\$resultado = \$conexion->query(\$query);	
 
-	while (\$usuario = mysql_fetch_array(\$resultado)) {
+	while (\$usuario = \$resultado->fetch_array()) {
 		\$session =  \$usuario['id'];
 		}
 
@@ -150,12 +150,12 @@ require "config/conexion.php";
 
 if (\$password == \$confirmacion) {
 	\$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('\$nombre', '\$email', md5('\$password'), '\$date', '\$date')";
-	\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+	\$completado = \$conexion->query(\$query);
 
 	\$query = "SELECT id FROM usuarios WHERE email = '\$email' AND password = md5('\$password')";
-	\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+	\$resultado = \$conexion->query(\$query);
 
-	while (\$usuario = mysql_fetch_array(\$resultado)) {
+	while (\$usuario = \$resultado->fetch_array()) {
 		\$session =  \$usuario['id'];
 		}
 
@@ -183,9 +183,9 @@ if (isset(\$_POST['sesion'])) {
 		\$password = \$_POST['password'];
 
 		\$query = "SELECT id, admin FROM usuarios WHERE email = '\$email' AND password = md5('\$password')";
-		\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+		\$resultado = \$conexion->query(\$query);	
 
-		while (\$usuario = mysql_fetch_array(\$resultado)) {
+		while (\$usuario = \$resultado->fetch_array()) {
 			if (isset(\$usuario)) {
 				\$usuario_id =  \$usuario['id']; 
 				\$rol_id = \$usuario['admin']; // Si es administrador nos va a dar un 1, si es usuario normal es 0
@@ -199,7 +199,7 @@ if (isset(\$_POST['sesion'])) {
 		} else {
 			\$msg = "El usuario o la contraseña no son correctas. Intenta de nuevo.";
 		}
-}                                               
+}
 
 ?>
 <!DOCTYPE html>
@@ -221,8 +221,8 @@ if (isset(\$_POST['sesion'])) {
 				<form action="iniciar_sesion.php" method="post" accept-charset="utf-8">
 					<?php
 						if (\$msg <> "")  {
-							echo "<div style='width: 100%; display: block; height: 50px; color: red'>";
-								echo \$msg;
+						  echo "<div style='width: 100%; display: block; height: 50px; color: red'>";
+							echo \$msg;
 							echo "</div>";
 						}
 					?>
@@ -313,10 +313,10 @@ require "config/conexion.php";
 
 if (\$password == \$confirmacion) {
 	\$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('\$nombre', '\$email', SHA2(256,'\$password'), '\$date', '\$date')";
-	\$completado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());
+	\$completado = \$conexion->query(\$query);
 
 	\$query = "SELECT id FROM usuarios WHERE email = '\$email' AND password = SHA2(256,'\$password')";
-	\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+	\$resultado = \$conexion->query(\$query);
 
 	while (\$usuario = mysql_fetch_array(\$resultado)) {
 		\$session =  \$usuario['id'];
@@ -346,9 +346,9 @@ if (isset(\$_POST['sesion'])) {
 		\$password = \$_POST['password'];
 
 		\$query = "SELECT id, admin FROM usuarios WHERE email = '\$email' AND password = SHA2(256,'\$password')";
-		\$resultado = mysql_query(\$query) or die ("No se pudo realizar la consulta. " . mysql_error());	
+		\$resultado = \$conexion->query(\$query);	
 
-		while (\$usuario = mysql_fetch_array(\$resultado)) {
+		while (\$usuario = \$resultado->fetch_array()) {
 			if (isset(\$usuario)) {
 				\$usuario_id =  \$usuario['id']; 
 				\$rol_id = \$usuario['admin']; // Si es administrador nos va a dar un 1, si es usuario normal es 0
@@ -385,7 +385,7 @@ if (isset(\$_POST['sesion'])) {
 					<?php
 						if (\$msg <> "")  {
 							echo "<div style='width: 100%; display: block; height: 50px; color: red'>";
-								echo \$msg;
+							echo \$msg;
 							echo "</div>";
 						}
 					?>
