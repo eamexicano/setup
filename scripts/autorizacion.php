@@ -166,7 +166,7 @@ if (\$password == \$confirmacion) {
 }                                      
 
 ?> 
-SOURCE;   
+SOURCE;
 	$archivo = fopen("../cuenta.php", 'w') or die("No se pudo crear el archivo destroy.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
@@ -460,8 +460,7 @@ SOURCE;
 	$archivo = fopen("../db/usuarios.sql", 'w') or die("No se pudo crear el archivo destroy.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);   
-}  
-
+}
 	$msg = "<div style='color: red;'>¡Hecho!</div>";
 }
 ?>            
