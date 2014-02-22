@@ -33,9 +33,11 @@ if (isset($_POST['sha']) && $_POST['sha'] == 'on') {
 $projectName = basename(dirname(dirname(__FILE__)));
 // Autenticación
 $setup_file = <<<SOURCE
-<?php
-	session_start();
-	if (empty(\$_SESSION['uid'])) { header("location: index.php"); } 
+<?php session_start();
+require 'root.php';
+if (empty($_SESSION['uid'])) { 
+		header("location: " . ROOT_PATH . "/index.php"); 
+} 
 ?>
 SOURCE;
 	$archivo = fopen("../autenticacion.php", 'w') or die("No se pudo crear el archivo destroy.php");
@@ -43,11 +45,11 @@ SOURCE;
 	fclose($archivo);
 // Autorización
 $setup_file = <<<SOURCE
-<?php
-	session_start();
-	if ((\$_SESSION['admin'] == null) || (\$_SESSION['admin'] <> 1)) {
-		header("location: ../index.php");
-	}
+<?php session_start();
+require 'root.php';
+if (!isset($_SESSION['admin']) || ($_SESSION['admin'] != 1)) {
+	header("location: " . ROOT_PATH . "/index.php");
+}
 ?>
 SOURCE;
 	$archivo = fopen("../autorizacion.php", 'w') or die("No se pudo crear el archivo destroy.php");
