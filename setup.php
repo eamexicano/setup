@@ -63,7 +63,6 @@ $setup_file = <<<SETUP_FILE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
 		<script src='assets/js/$proyecto.js'></script>
 	</body>
 </html>     
@@ -121,7 +120,6 @@ $setup_file = <<<SETUP_FILE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
 		<script src='assets/js/$proyecto.js'></script>
 	</body>
 </html>     
@@ -142,43 +140,9 @@ SETUP_FILE;
 	$archivo = fopen("$proyecto/assets/css/$proyecto.css", 'w') or die("No se pudo crear el archivo $proyecto.css");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
-// CSS
-$setup_file = <<< SETUP_FILE
-/* 
-   Responsive CSS
-   1. Utilizar la hoja de estilos del sitio / aplicación normalmente.
-   2. Mandar llamar esta hoja de estilos después de que se cargue la hoja de estilos del sitio.
-   Agregar dentro de cada tamaño de anchura las reglas en CSS que van a modificar valores establecidos en la hoja de estilos inicial.
-   por ejemplo:
-	@media (min-width:1200px){
-		body {width: 1000px; }
-	}
-*/
-@media (min-width:1200px){
-}
-
-@media (min-width:940px){
-}
-
-@media (max-width:940px){
-}
-
-@media (max-width:768px){ 
-}
-
-@media (max-width:480px){
-}                    			
-SETUP_FILE;
-	$archivo = fopen("$proyecto/assets/css/responsive.css", 'w') or die("No se pudo crear el archivo responsive.css");
-	fwrite($archivo, $setup_file);
-	fclose($archivo);
 // JS	
 $setup_file = <<< SETUP_FILE
-/*
-AQUÍ VA EL CÓDIGO JS
-jQuery(document).ready(function($) { 
-});
-*/
+/* AQUÍ VA EL CÓDIGO JS */
 SETUP_FILE;
 	$archivo = fopen("$proyecto/assets/js/$proyecto.js", 'w') or die("No se pudo crear el archivo $proyecto.js");
 	fwrite($archivo, $setup_file);
@@ -188,6 +152,10 @@ $setup_file = <<< SETUP_FILE
 <?php
   date_default_timezone_set('America/Mexico_City');
   \$conexion = new mysqli("127.0.0.1", "root","", "$proyecto");
+  if (mysqli_connect_errno()) {
+      printf("Error de conexión: %s\n", mysqli_connect_error());
+      exit();
+  }  
   \$conexion->query("SET NAMES UTF8");
   \$conexion->query("SET CHARACTER SET utf8");
 ?>
