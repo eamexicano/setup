@@ -148,8 +148,8 @@ SOURCE;
 	else {
 		$query = "SHOW TABLES";
 		$available_tables = "";
-		$resultados = mysql_query($query) or die ("No se pudo realizar la consulta. " . mysql_error());
-		while ($resultado = mysql_fetch_array($resultados)) { 				
+		$resultados = $conexion->query($query);
+		while ($resultado = $resultados->fetch_array()) { 				
 		 	$available_tables .= "<option value='" . $resultado['0'] . "'>" . $resultado['0'] . '</option>';
 		}   
 		echo "<select id='t1' name='table_1'>";  
