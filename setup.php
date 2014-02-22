@@ -172,14 +172,14 @@ SETUP_FILE;
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 	// Copiar scripts al proyecto generado
-		exec("cp scripts/autorizacion.php $proyecto/scripts/autorizacion.php");
-		exec("cp scripts/buscador.php $proyecto/scripts/buscador.php");
-		exec("cp scripts/contacto.php $proyecto/scripts/contacto.php");
-		exec("cp scripts/index.html $proyecto/scripts/index.html");    
-		exec("cp scripts/pluralize.php $proyecto/scripts/pluralize.php");
-		exec("cp scripts/representar.php $proyecto/scripts/representar.php");
-		exec("cp scripts/representar-archivo.php $proyecto/scripts/representar-archivo.php");
-		exec("cp scripts/union.php $proyecto/scripts/union.php");
+		copy("scripts/autorizacion.php", "$proyecto/scripts/autorizacion.php");
+		copy("scripts/buscador.php", "$proyecto/scripts/buscador.php");
+		copy("scripts/contacto.php", "$proyecto/scripts/contacto.php");
+		copy("scripts/index.html", "$proyecto/scripts/index.html");    
+		copy("scripts/pluralize.php", "$proyecto/scripts/pluralize.php");
+		copy("scripts/representar.php", "$proyecto/scripts/representar.php");
+		copy("scripts/representar-archivo.php", "$proyecto/scripts/representar-archivo.php");
+		copy("scripts/union.php", "$proyecto/scripts/union.php");
 	// Copiar scripts al proyecto generado
 	if (exec("mysql -u root < db/$proyecto.sql")) {
 		echo "Listo para utilizar.<br />";
