@@ -128,7 +128,6 @@ $setup_file = <<<SOURCE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
 		<script src='assets/js/$proyectName.js'></script>
 	</body>
 </html> 
@@ -272,7 +271,6 @@ if (isset(\$_POST['sesion'])) {
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
 		<script src='assets/js/$proyectName.js'></script>
 	</body>
 </html>
@@ -435,7 +433,6 @@ if (isset(\$_POST['sesion'])) {
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
 		<script src='assets/js/$proyectName.js'></script>
 	</body>
 </html>
