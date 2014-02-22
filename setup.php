@@ -40,6 +40,19 @@ if (isset($_POST['proyecto'])) {
 	chmod("$proyecto/assets/js", 0777);
 	chmod("$proyecto/assets/img", 0777);
 
+$setup_file = <<<SETUP_FILE
+<?php
+/* https://gist.github.com/lavoiesl/4998690/ */
+$base_dir  = __DIR__;
+$doc_root  = preg_replace("!{$_SERVER['SCRIPT_NAME']}$!", '', $_SERVER['SCRIPT_FILENAME']);
+$base_url  = preg_replace("!^{$doc_root}!", '', $base_dir);
+define('ROOT_PATH', $base_url);
+?>
+SETUP_FILE;
+	$archivo = fopen("$proyecto/root.php", 'w') or die('No se pudo crear el archivo root.php');
+	fwrite($archivo, $setup_file);
+	fclose($archivo);
+// root
 	// HTML
 $setup_file = <<<SETUP_FILE
 <!DOCTYPE html>
