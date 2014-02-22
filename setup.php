@@ -140,36 +140,6 @@ SETUP_FILE;
 	$archivo = fopen("$proyecto/assets/css/$proyecto.css", 'w') or die("No se pudo crear el archivo $proyecto.css");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
-// CSS
-$setup_file = <<< SETUP_FILE
-/* 
-   Responsive CSS
-   1. Utilizar la hoja de estilos del sitio / aplicación normalmente.
-   2. Mandar llamar esta hoja de estilos después de que se cargue la hoja de estilos del sitio.
-   Agregar dentro de cada tamaño de anchura las reglas en CSS que van a modificar valores establecidos en la hoja de estilos inicial.
-   por ejemplo:
-	@media (min-width:1200px){
-		body {width: 1000px; }
-	}
-*/
-@media (min-width:1200px){
-}
-
-@media (min-width:940px){
-}
-
-@media (max-width:940px){
-}
-
-@media (max-width:768px){ 
-}
-
-@media (max-width:480px){
-}                    			
-SETUP_FILE;
-	$archivo = fopen("$proyecto/assets/css/responsive.css", 'w') or die("No se pudo crear el archivo responsive.css");
-	fwrite($archivo, $setup_file);
-	fclose($archivo);
 // JS	
 $setup_file = <<< SETUP_FILE
 /* AQUÍ VA EL CÓDIGO JS */
