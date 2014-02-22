@@ -24,13 +24,7 @@
 	if (isset($_POST['recurso'])) {
 	  $recurso = $_POST['recurso'];    
 	  /* Asignar valores del formulario a variables y remover para generar el SQL bien */
-  	if (isset($_POST['responsive']) && ($_POST['responsive'] == '1' || $_POST['responsive'] == 'on')) {
-  		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />\n";		
-  		$css .= "<link rel='stylesheet' href='../assets/css/responsive.css' type='text/css' />";
-  	} else {		
-  		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />";
-  	}  
-	
+		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />";
   	$script = "<script src='../assets/js/$projectName.js'></script>";
 	
   	/* htmlContent */
@@ -480,7 +474,6 @@ $sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
 			</div>
 			<input type='button' id='addAttribute' value='Agregar atributo' /><br>
 			<input type='checkbox' name='htmlContent' />Seleccionar si se quiere almacenar contenido en HTML / CSS / JS<br>			
-			<input type='checkbox' name='responsive' />Vincular con responsive.css - Documentos html sensibles al tamaño de la pantalla (ajustar reglas por tamaño).<br>
 			<input type='submit' value='Crear archivos' />
 		</form>
 <?php
