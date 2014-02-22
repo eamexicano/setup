@@ -31,8 +31,7 @@
   		$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />";
   	}  
 	
-  	$script = "<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>\n";
-  	$script .= "<script src='../assets/js/$projectName.js'></script>";
+  	$script = "<script src='../assets/js/$projectName.js'></script>";
 	
   	/* htmlContent */
   	if (isset($_POST['htmlContent']) && ($_POST['htmlContent'] == '1' || $_POST['htmlContent'] == 'on')) {

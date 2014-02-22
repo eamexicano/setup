@@ -63,7 +63,6 @@ $setup_file = <<<SETUP_FILE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
 		<script src='assets/js/$proyecto.js'></script>
 	</body>
 </html>     
@@ -121,7 +120,6 @@ $setup_file = <<<SETUP_FILE
 				</p>
 			</div>
 		</div>
-		<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
 		<script src='assets/js/$proyecto.js'></script>
 	</body>
 </html>     
@@ -174,11 +172,7 @@ SETUP_FILE;
 	fclose($archivo);
 // JS	
 $setup_file = <<< SETUP_FILE
-/*
-AQUÍ VA EL CÓDIGO JS
-jQuery(document).ready(function($) { 
-});
-*/
+/* AQUÍ VA EL CÓDIGO JS */
 SETUP_FILE;
 	$archivo = fopen("$proyecto/assets/js/$proyecto.js", 'w') or die("No se pudo crear el archivo $proyecto.js");
 	fwrite($archivo, $setup_file);
