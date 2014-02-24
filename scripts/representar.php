@@ -60,7 +60,6 @@
 		if ($elem[$key] != '') {
 			if ($elem[$value] == 'text') {
 		   		$new_input .= "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]' placeholder='$elem[$key]'></textarea><br>\n";
-          $edit_input .=  "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]'><?php echo \$resultado['$elem[$key]']; ?></textarea><br>\n";
           $edit_input .=  "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]'><?php echo stripslashes(\$resultado['$elem[$key]']); ?></textarea><br>\n";
 			} elseif(preg_match("/_id+$/i", $elem[$key])) {
 				$attr_id = $elem[$key];
@@ -105,7 +104,7 @@ SOURCE;
 $edit_input .= $tmp_edit_input;				
 			} else {
 		   		$new_input .= "<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br>\n";
-		      $edit_input .= "<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' value='<?php echo \$resultado['$elem[$key]']; ?>'/><br>\n";
+		      $edit_input .= "<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' value='<?php echo stripslashes(\$resultado['$elem[$key]']); ?>'/><br>\n";
 			}							
 
 			if (isset($htmlContent) && ($htmlContent == true)) {
