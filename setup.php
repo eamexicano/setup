@@ -40,6 +40,19 @@ if (isset($_POST['proyecto'])) {
 	chmod("$proyecto/assets/js", 0777);
 	chmod("$proyecto/assets/img", 0777);
 
+$setup_file = <<<SETUP_FILE
+<?php
+/* https://gist.github.com/lavoiesl/4998690/ */
+$base_dir  = __DIR__;
+$doc_root  = preg_replace("!{$_SERVER['SCRIPT_NAME']}$!", '', $_SERVER['SCRIPT_FILENAME']);
+$base_url  = preg_replace("!^{$doc_root}!", '', $base_dir);
+define('ROOT_PATH', $base_url);
+?>
+SETUP_FILE;
+	$archivo = fopen("$proyecto/root.php", 'w') or die('No se pudo crear el archivo root.php');
+	fwrite($archivo, $setup_file);
+	fclose($archivo);
+// root
 	// HTML
 $setup_file = <<<SETUP_FILE
 <!DOCTYPE html>
@@ -172,14 +185,14 @@ SETUP_FILE;
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 	// Copiar scripts al proyecto generado
-		exec("cp scripts/autorizacion.php $proyecto/scripts/autorizacion.php");
-		exec("cp scripts/buscador.php $proyecto/scripts/buscador.php");
-		exec("cp scripts/contacto.php $proyecto/scripts/contacto.php");
-		exec("cp scripts/index.html $proyecto/scripts/index.html");    
-		exec("cp scripts/pluralize.php $proyecto/scripts/pluralize.php");
-		exec("cp scripts/representar.php $proyecto/scripts/representar.php");
-		exec("cp scripts/representar-archivo.php $proyecto/scripts/representar-archivo.php");
-		exec("cp scripts/union.php $proyecto/scripts/union.php");
+		copy("scripts/autorizacion.php", "$proyecto/scripts/autorizacion.php");
+		copy("scripts/buscador.php", "$proyecto/scripts/buscador.php");
+		copy("scripts/contacto.php", "$proyecto/scripts/contacto.php");
+		copy("scripts/index.html", "$proyecto/scripts/index.html");    
+		copy("scripts/pluralize.php", "$proyecto/scripts/pluralize.php");
+		copy("scripts/representar.php", "$proyecto/scripts/representar.php");
+		copy("scripts/representar-archivo.php", "$proyecto/scripts/representar-archivo.php");
+		copy("scripts/union.php", "$proyecto/scripts/union.php");
 	// Copiar scripts al proyecto generado
 	if (exec("mysql -u root < db/$proyecto.sql")) {
 		echo "Listo para utilizar.<br />";

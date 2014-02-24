@@ -34,7 +34,6 @@
 		$htmlContent = false;
 	}
 
-	unset($_POST['responsive']);
 	unset($_POST['htmlContent']);
 	
 	echo "Creando directorios para $recurso <br>\n";
@@ -51,6 +50,9 @@
 	$edit_input="";
 	$tmp_edit_input="";
 	$update_attrs = "";
+  $update_vals = "";
+  $prepared_keys = "(";
+  $prepared_bind_params_type = "'";
 	for($i=1;$i<count($elem);$i++) {
 		$key = "attr_" . $i;
 		$value = "type_". $i;
@@ -58,7 +60,7 @@
 		if ($elem[$key] != '') {
 			if ($elem[$value] == 'text') {
 		   		$new_input .= "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]' placeholder='$elem[$key]'></textarea><br>\n";
-		   		$edit_input .= "echo \"<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]'>\" . stripslashes(\$resultado['$elem[$key]']) . \"</textarea><br>\";\n";					
+          $edit_input .=  "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]'><?php echo stripslashes(\$resultado['$elem[$key]']); ?></textarea><br>\n";
 			} elseif(preg_match("/_id+$/i", $elem[$key])) {
 				$attr_id = $elem[$key];
 				$sustantivo = str_replace("_id", "", $elem[$key]);
@@ -66,22 +68,22 @@
 				/* new input*/
 $tmp_new_input = <<<SOURCE
 \n<?php
-				require('../config/conexion.php');
-				\$query = "SELECT * FROM $tabla";
-		 		\$resultado = \$conexion->query(\$query);	
-				echo "<label>$sustantivo</label><br>";
-				echo "<select name='$elem[$key]'>";
-				echo "<option value='0' selected> - Selecciona - </option>";
-				while (\$mostrar = \$resultado->fetch_array()) { 
-					echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";
-				} 
-				echo "</select><br>";
+  require('../config/conexion.php');
+  \$query = "SELECT * FROM $tabla";
+  \$resultado = \$conexion->query(\$query);	
+  echo "<label>$sustantivo</label><br>";
+  echo "<select name='$elem[$key]'>";
+  echo "<option value='0' selected> - Selecciona - </option>";
+  while (\$mostrar = \$resultado->fetch_array()) { 
+  	echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";
+  } 
+  echo "</select><br>";
 ?>\n
 SOURCE;
 $new_input .= $tmp_new_input;
                 /* new input*/
 $tmp_edit_input = <<<SOURCE
-				 \$attr_id = \$resultado['$attr_id'];
+			 \$attr_id = \$resultado['$attr_id'];
 				\$query = "SELECT * FROM $tabla";
 				\$select = \$conexion->query(\$query);	
 				echo "<label>$sustantivo</label><br>";
@@ -102,7 +104,7 @@ SOURCE;
 $edit_input .= $tmp_edit_input;				
 			} else {
 		   		$new_input .= "<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' placeholder='$elem[$key]' /><br>\n";
-		   		$edit_input .= "echo \"<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' value='\" . \$resultado['$elem[$key]'] . \"' /><br>\";\n";					
+		      $edit_input .= "<label>$elem[$key]</label><br>\n<input type='text' name='$elem[$key]' value='<?php echo stripslashes(\$resultado['$elem[$key]']); ?>'/><br>\n";
 			}							
 
 			if (isset($htmlContent) && ($htmlContent == true)) {
@@ -112,10 +114,22 @@ $edit_input .= $tmp_edit_input;
 			}
 	   		$sent_params .= "\$$elem[$key] = \$_POST['$elem[$key]'];\n";
 	   		$insert_attrs .= "$elem[$key],";
-	   		$insert_vals .= "'\$$elem[$key]',";
-			$update_attrs .= "$elem[$key] = '\$$elem[$key]',";
+        $prepared_keys .= "?, ";
+        
+        if (preg_match("/_id+$/i", $elem[$key]) || 'id' == $elem[$key]) {
+          // PK / FK will be reated like integers
+          $prepared_bind_params_type .= "i";
+        } else {
+          // All other attributes will be treated like text
+          $prepared_bind_params_type .= "s";
+        }
+	   		$insert_vals .= "\$$elem[$key],";
+        $update_vals .= "\$$elem[$key],";
+			  $update_attrs .= "$elem[$key] = ? ,";
+        
 		}	   		
 	}	
+    
 $setup_file = <<<SOURCE
 <!DOCTYPE html>
 <html>
@@ -131,17 +145,22 @@ $setup_file = <<<SOURCE
 			</div>
 			<a href="new.php">Agregar $recurso</a>
 			<div class='content'>
-				<?php
-				\$query = "SELECT * FROM $recurso";
-				\$resultados = \$conexion->query(\$query);
-					while (\$resultado = \$resultados->fetch_array()) { 
-  					$show
-					echo "<a href='show.php?id=" . \$resultado['id'] . "'>Ver</a>";
-					echo "<a href='edit.php?id=" . \$resultado['id'] . "'>Editar</a>";
-					echo "<form action='destroy.php' method='post' class='linkDisplay'><input type='hidden' name='id' value='" . \$resultado['id'] . "'/><input type='submit' value='Eliminar' class='linkDisplay' /></form>";
-					echo "<br>";
-				}				
-				?>
+      <?php
+      if (\$stmt = \$conexion->prepare("SELECT * FROM $recurso")) {
+        \$stmt->execute();
+        \$resultados = \$stmt->get_result();
+
+				while (\$resultado = \$resultados->fetch_array()) { 
+          $show
+          echo "[ <a href='show.php?id=" . \$resultado['id'] . "'>Ver</a> | ";
+          echo "<a href='edit.php?id=" . \$resultado['id'] . "'>Editar</a> | ";
+          echo "<form action='destroy.php' method='post' class='linkDisplay'><input type='hidden' name='id' value='" . \$resultado['id'] . "'/><input type='submit' value='Eliminar' class='linkDisplay' /></form> ]";
+          echo "<br>";
+				} 
+        \$statement->close();
+      } 
+      \$conexion->close();
+      ?>
 			</div>
 			<div class='footer'>
 				<p>
@@ -172,14 +191,21 @@ $setup_file = <<<SOURCE
 			</div>
 			<a href="index.php">Ver todos</a>
 			<div class='content'>
-				<?php				
-				\$id = \$_GET['id'];
-				\$query = "SELECT * FROM $recurso WHERE id = '\$id'";
-				\$resultados = \$conexion->query(\$query);
-					while (\$resultado = \$resultados->fetch_array()) { 
-				 	$show
-				}				
-				?>
+			<?php				
+			\$id = \$_GET['id'];
+
+      if (\$stmt = \$conexion->prepare("SELECT * FROM $recurso WHERE id = ?")) {
+        \$stmt->bind_param("i", \$id);
+        \$stmt->execute();
+        \$resultados = \$stmt->get_result();
+
+				while (\$resultado = \$resultados->fetch_array()) { 
+          $show
+				} 
+        \$stmt->close();
+      }               
+      \$conexion->close();
+			?>
 			</div>
 			<div class='footer'>
 				<p>
@@ -227,13 +253,40 @@ SOURCE;
 	$archivo = fopen("../$recurso/new.php", 'w') or die("No se pudo crear el archivo new.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
+  
+// Remove last comma close the sentence with a right parenthesis
+$prepared_keys .= "?, ?)";
+$prepared_bind_params_type .= "ss'";
+  
 $setup_file = <<<SOURCE
 <?php
 require '../config/conexion.php';
 $sent_params
 \$date = date('Y-m-d H:i:s'); 
-\$query = "INSERT INTO $recurso ($insert_attrs creado, actualizado) VALUES ($insert_vals '\$date', '\$date')";
-\$completado = \$conexion->query(\$query);
+
+if (\$stmt = \$conexion->prepare("INSERT INTO $recurso($insert_attrs creado, actualizado) VALUES $prepared_keys")) {
+  
+  if (\$stmt === false) {
+    die('Error prepare(): ' . htmlspecialchars(\$conexion->error));
+  }
+
+  \$completado = \$stmt->bind_param($prepared_bind_params_type, $insert_vals \$date, \$date);
+  
+  if (\$completado === false) {
+    die('Error bind_param(): ' . htmlspecialchars(\$completado->error));
+  }
+
+  \$completado = \$stmt->execute();
+  
+  if (\$completado === false) {
+    die('Error execute(): ' . htmlspecialchars(\$completado->error));
+  }
+  
+  \$stmt->close();  
+}
+
+\$conexion->close();
+
 if (\$completado) {
 	header("location: ./index.php");
 } else {
@@ -259,19 +312,25 @@ $setup_file = <<<SOURCE
 			</div>
 			<a href="index.php">Ver todos</a>
 			<div class='content'>
-			<?php require '../config/conexion.php'; ?>
-			<form action='update.php' method='post'>
-			<?php
+			<?php require '../config/conexion.php'; 
 			\$id = \$_GET['id'];
-			\$query = "SELECT * FROM $recurso WHERE id = '\$id'";
-			\$resultados = \$conexion->query(\$query);
-				while (\$resultado = \$resultados->fetch_array()) { 
+      if (\$stmt = \$conexion->prepare("SELECT * FROM $recurso WHERE id = ?")) {
+        /* Bind parameters s - string, b - blob, i - int, etc */
+        \$stmt->bind_param("i", \$id);
+        \$stmt->execute();
+        \$resultados = \$stmt->get_result();
+        \$resultado = \$resultados->fetch_array();
+      ?>
+			<form action='update.php' method='post'>
 				$edit_input
-			 	echo "<input type='hidden' name='id' value='\$id'>";  
-			}				
-			?>
+        <input type='hidden' name='id' value='<?php echo \$id ?>'>
 				<input type='submit' value='Actualizar' />
 			</form>
+      <?php
+        \$stmt->close();
+      }
+      \$conexion->close();
+			?>
 			</div>
 			<div class='footer'>
 				<p>
@@ -293,8 +352,31 @@ require '../config/conexion.php';
 \$id = \$_POST['id'];
 $sent_params
 \$date = date('Y-m-d H:i:s');
-\$query = "UPDATE $recurso SET  $update_attrs actualizado = '\$date' WHERE id = '\$id'"; 
-\$completado = \$conexion->query(\$query);
+
+if (\$stmt = \$conexion->prepare("UPDATE $recurso SET  $update_attrs actualizado = ? WHERE id = ?")) {
+  
+  if (\$stmt === false) {
+    die('Error prepare(): ' . htmlspecialchars(\$conexion->error));
+  }
+    
+  \$completado = \$stmt->bind_param($prepared_bind_params_type, $update_vals \$date, \$id);
+  
+  if (\$completado === false) {
+    die('Error bind_param(): ' . htmlspecialchars(\$completado->error));
+  }
+  
+  
+  \$completado = \$stmt->execute();
+  
+  if (\$completado === false) {
+    die('Error execute(): ' . htmlspecialchars(\n$completado->error));
+  }
+  
+  
+  \$stmt->close();
+} 
+
+\$conexion->close();
 if (\$completado) {
 	header("location: ./index.php");
 } else {
@@ -312,8 +394,14 @@ $setup_file = <<<SOURCE
 <?php
 require '../config/conexion.php';
 \$id = \$_POST['id'];
-\$query = "DELETE FROM $recurso WHERE id = '\$id'";
-\$completado = \$conexion->query(\$query);
+
+if (\$stmt = \$conexion->prepare("DELETE FROM $recurso WHERE id = ?")) {
+  \$stmt->bind_param("i", \$id);
+  \$completado = \$stmt->execute();
+  \$resultados = \$stmt->get_result();
+  \$stmt->close();  
+}
+\$conexion->close();
 if (\$completado) {
 	header("location: ./index.php");
 } else {
@@ -347,7 +435,7 @@ foreach ($elem as $key => $value) {
 $sql_table .= "creado datetime, \n";
 $sql_table .= "actualizado datetime, \n";
 $sql_table .= "PRIMARY KEY (id) \n";
-$sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
+$sql_table .= ") ENGINE=InnoDB DEFAULT CHARSET=UTF8;";
 
 	$archivo = fopen("../db/$recurso.sql", 'w') or die("No se pudo crear el archivo $recurso.sql");
 	fwrite($archivo, $sql_table);

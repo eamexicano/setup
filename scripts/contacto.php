@@ -37,8 +37,6 @@ $setup_file = <<<SOURCE
 
 			if(trim(\$_POST['email']) == '')  {
 				\$hasError = true;
-			} else if (!eregi("^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}\$", trim(\$_POST['email']))) {
-				\$hasError = true;
 			} else {
 				\$email = trim(\$_POST['email']);
 			}
@@ -49,13 +47,10 @@ $setup_file = <<<SOURCE
 				\$mensaje = trim(\$_POST['mensaje']);
 			}
 
-			\$empresa = trim(\$_POST['empresa']);
-			\$telefono = trim(\$_POST['telefono']);
-
 				if(!isset(\$hasError)) {
 					\$emailTo = '$email_receiver';
 					\$subject = 'Información de contacto';
-					\$body = "Nombre: \$nombre Email: \$email Asunto: \$subject Mensaje: \$mensaje  Empresa: \$empresa  Teléfono: \$telefono ";
+					\$body = "Nombre: \$nombre Email: \$email Asunto: \$subject Mensaje: \$mensaje ";
 					\$headers = 'From: $projectName <'.\$emailTo.'>' . "\r" . 'Reply-To: ' . \$email;
 
 					mail(\$emailTo, \$subject, \$body, \$headers);				           
@@ -98,14 +93,6 @@ $setup_file = <<<SOURCE
 							<tr>
 								<td><label class='required'>Nombre</label></td>
 								<td><input type='text' id='nombre' name='nombre' /></td>
-							</tr>
-							<tr>
-								<td><label>Empresa</label></td>
-								<td><input type='text' name='empresa' /></td>
-							</tr>
-							<tr>
-								<td><label>Teléfono</label></td>
-								<td><input type='text' name='telefono' /></td>
 							</tr>
 							<tr>
 								<td><label class='required'>E-mail</label></td>
