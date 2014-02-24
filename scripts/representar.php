@@ -61,6 +61,7 @@
 			if ($elem[$value] == 'text') {
 		   		$new_input .= "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]' placeholder='$elem[$key]'></textarea><br>\n";
           $edit_input .=  "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]'><?php echo \$resultado['$elem[$key]']; ?></textarea><br>\n";
+          $edit_input .=  "<label>$elem[$key]</label><br>\n<textarea name='$elem[$key]'><?php echo stripslashes(\$resultado['$elem[$key]']); ?></textarea><br>\n";
 			} elseif(preg_match("/_id+$/i", $elem[$key])) {
 				$attr_id = $elem[$key];
 				$sustantivo = str_replace("_id", "", $elem[$key]);
