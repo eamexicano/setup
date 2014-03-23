@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>setup por @eamexicano</title>
+    <style>
+    body {font-family: 'Helvetica Neue', helvetica, sans-serif; background: #f0f0f0; color: #252525; margin: 0 auto; font-size: 16px;}
+    .container {width: 980px; margin: 0 auto;}
+    header {margin: 1em auto; background: #ff9900; color: #f2f2f2; height: 100px; text-align: center; line-height: 100px; box-shadow: 0 2px 2px #c0c0c0; border-radius: 2px;}
+    h1  {margin: 0; }
+    h2 { color: #151515;}
+    ul {list-style: none;}
+    footer {text-align: right;  border-top: 1px solid #d5d5d5;}
+    </style>
+  </head>
+  <body>
+    <div class='container'>
+        <header>
+        <h1>setup</h1>
+        </header>
+        <section>
+            <article>
+              <p>
+              Es un generador de archivos (php / sql) desde el navegador. <br>
+              Los archivos generados te permiten realizar las operaciones básicas (crear, leer, actualizar, eliminar) en las tablas de una base de datos.<br> 
+              Además de eso cuenta con algunos scripts para crear:<br>
+              </p>
+              <ul>
+              	  <li>Formulario de contacto</li>
+              	  <li>Buscador</li>
+              	  <li>Sistema (muy) básico de autenticación y autorización</li>
+              	  <li>Opción para subir archivos al servidor asociados a una tabla.</li>
+              </ul>
+              
+              <h2>Recomendaciones de uso</h2>
+              <p>
+              Nombre de la tabla en español, plural (usuarios, categorias, productos, documentos, etiquetas).<br>
+              Para nombrar tablas utilizar solo letras minúsculas [a-z], sin acentos o ñ, espacios o guiones.<br>
+              Cuando se quiera una clave foránea (FK) para relacionar dos tablas utilizar el nombre de la tabla "independiente" en singular<br> 
+              seguido de _id.<br>
+              Ej: Relacionar productos con categorias.<br>
+              Al crear la tabla "productos", agregar una columna llamada categoria_id.<br>
+              </p>
+              <h2>Requerimientos</h2>
+              <p>
+              Instalación LAMP (XAMPP, MAMP, WAMP o instalación independiente de Apache, MySQL, PHP).<br>
+              Descargar el archivo .zip<br>
+              Descomprimir dentro de htdocs o carpeta donde se encuentren los proyectos web (como /var/www/http).<br>
+              Renombrar la carpeta con un nombre corto (setup).<br>
+              Verificar que la carpeta tenga permisos para escritura (0777) para poder generar el proyecto.<br>
+              Iniciar Apache, MySQL y visitar: http://localhost/setup/setup.php
+              </p>
+              <h2>Notas</h2>
+              <p>
+              La dirección (URL) puede variar si la instalación de XAMPP utiliza otro puerto (8080, 8888).<br>
+              Es recomendable aumentar la seguridad cuando el proyecto se encuentre en un servidor que sea accesible a través de internet<br>
+              (cambiar los permisos de escritura a (0755).
+              </p>
+
+              <h2>Licencia</h2>
+              Setup utiliza una <a href='http://opensource.org/licenses/MIT' target='_blank'>licencia MIT</a>.
+              
+            </article>
+        </section>
+        <footer>
+          <p>
+            Desarrollado por @eamexicano
+          </p>
+        </footer>
+    </div>
+  </body>
+</html>
