@@ -35,7 +35,7 @@ $projectName = basename(dirname(dirname(__FILE__)));
 $setup_file = <<<SOURCE
 <?php session_start();
 require 'root.php';
-if (empty($_SESSION['uid'])) { 
+if (empty(\$_SESSION['uid'])) { 
 		header("location: " . ROOT_PATH . "/index.php"); 
 } 
 ?>
@@ -47,7 +47,7 @@ SOURCE;
 $setup_file = <<<SOURCE
 <?php session_start();
 require 'root.php';
-if (!isset($_SESSION['admin']) || ($_SESSION['admin'] != 1)) {
+if (!isset(\$_SESSION['admin']) || (\$_SESSION['admin'] != 1)) {
 	header("location: " . ROOT_PATH . "/index.php");
 }
 ?>
@@ -59,45 +59,12 @@ SOURCE;
 $setup_file = <<<SOURCE
 <?php
 	session_start();
+  \$_SESSION = array();  
 	session_destroy();
 	header("location: index.php");
 ?>
 SOURCE;
 	$archivo = fopen("../cerrar_sesion.php", 'w') or die("No se pudo crear el archivo destroy.php");
-	fwrite($archivo, $setup_file);
-	fclose($archivo);
-// Cuenta
-$setup_file = <<<SOURCE
-<?php
-session_start();
-require "config/conexion.php";
-
-\$nombre = \$_POST['nombre'];
-\$email = \$_POST['email'];
-\$password = \$_POST['password'];
-\$confirmacion = \$_POST['confirmacion'];
-\$date = date('Y-m-d H:i:s');
-
-if (\$password == \$confirmacion) {
-	\$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('\$nombre', '\$email', md5('\$password'), '\$date', '\$date')";
-	\$completado = \$conexion->query(\$query);
-
-	\$query = "SELECT id FROM usuarios WHERE email = '\$email' AND password = md5('\$password')";
-	\$resultado = \$conexion->query(\$query);	
-
-	while (\$usuario = \$resultado->fetch_array()) {
-		\$session =  \$usuario['id'];
-		}
-
-		\$_SESSION['uid'] = \$session;			
-		header("location: home.php");
-} else {
-		header("location: index.php");
-}                                      
-
-?> 
-SOURCE;
-	$archivo = fopen("../cuenta.php", 'w') or die("No se pudo crear el archivo destroy.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 // Home
@@ -152,15 +119,7 @@ require "config/conexion.php";
 if (\$password == \$confirmacion) {
 	\$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('\$nombre', '\$email', md5('\$password'), '\$date', '\$date')";
 	\$completado = \$conexion->query(\$query);
-
-	\$query = "SELECT id FROM usuarios WHERE email = '\$email' AND password = md5('\$password')";
-	\$resultado = \$conexion->query(\$query);
-
-	while (\$usuario = \$resultado->fetch_array()) {
-		\$session =  \$usuario['id'];
-		}
-
-		\$_SESSION['uid'] = \$session;			
+	\$_SESSION['uid'] = \$conexion->insert_id;	
 		header("location: home.php");
 } else {
 		header("location: index.php");
@@ -290,7 +249,7 @@ admin int(11) NOT NULL,
 creado datetime,
 actualizado datetime,
 PRIMARY KEY (id)
-) ENGINE=MyISAM DEFAULT CHARSET=UTF8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 INSERT INTO usuarios (nombre, email, `password`, admin, creado, actualizado) VALUES ('admin', 'admin@example.com', md5('admin'), 1, NOW(), NOW());
 SOURCE;
 	$archivo = fopen("../db/usuarios.sql", 'w') or die("No se pudo crear el archivo destroy.php");
@@ -298,7 +257,7 @@ SOURCE;
 	fclose($archivo);
 
 } else {
-// Utilizar SHA2(256,'valor') 
+// Utilizar SHA2('valor', 256) 
 // Cuenta
 $setup_file = <<<SOURCE
 <?php
@@ -312,17 +271,9 @@ require "config/conexion.php";
 \$date = date('Y-m-d H:i:s');
 
 if (\$password == \$confirmacion) {
-	\$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('\$nombre', '\$email', SHA2(256,'\$password'), '\$date', '\$date')";
+	\$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('\$nombre', '\$email', SHA2('\$password', 256), '\$date', '\$date')";
 	\$completado = \$conexion->query(\$query);
-
-	\$query = "SELECT id FROM usuarios WHERE email = '\$email' AND password = SHA2(256,'\$password')";
-	\$resultado = \$conexion->query(\$query);
-
-	while (\$usuario = mysql_fetch_array(\$resultado)) {
-		\$session =  \$usuario['id'];
-		}
-
-		\$_SESSION['uid'] = \$session;			
+	\$_SESSION['uid'] = \$conexion->insert_id;
 		header("location: home.php");
 } else {
 		header("location: index.php");
@@ -345,7 +296,7 @@ if (isset(\$_POST['sesion'])) {
 		\$email = \$_POST['email'];
 		\$password = \$_POST['password'];
 
-		\$query = "SELECT id, admin FROM usuarios WHERE email = '\$email' AND password = SHA2(256,'\$password')";
+		\$query = "SELECT id, admin FROM usuarios WHERE email = '\$email' AND password = SHA2('\$password', 256)";
 		\$resultado = \$conexion->query(\$query);	
 
 		while (\$usuario = \$resultado->fetch_array()) {
@@ -453,8 +404,8 @@ admin int(11) NOT NULL,
 creado datetime,
 actualizado datetime,
 PRIMARY KEY (id)
-) ENGINE=MyISAM DEFAULT CHARSET=UTF8;
-INSERT INTO usuarios (nombre, email, `password`, admin, creado, actualizado) VALUES ('admin', 'admin@example.com', SHA2(256,'admin'), 1, NOW(), NOW());
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO usuarios (nombre, email, `password`, admin, creado, actualizado) VALUES ('admin', 'admin@example.com', SHA2('admin', 256), 1, NOW(), NOW());
 SOURCE;
 	$archivo = fopen("../db/usuarios.sql", 'w') or die("No se pudo crear el archivo destroy.php");
 	fwrite($archivo, $setup_file);
