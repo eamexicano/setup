@@ -249,7 +249,7 @@ SETUP_FILE;
 			<li><em>db</em>: Carpeta que tiene el archivo sql para crear la BD. Si se utiliza resource.php ahí se van a guardar los scripts para crear las tablas.</li>
 			<li><em>scripts</em>: Scripts en PHP que agregan funcionalidad</li>
 		</ul>
-		<form action='setup.php' method='post'>
+		<form action='index.php' method='post'>
 			<label>Proyecto</label><br />
 			<input type='text' name='proyecto' placeholder='Nombre del proyecto'><br />
 			<input type='submit' value='Crear proyecto'>
