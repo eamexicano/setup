@@ -133,7 +133,7 @@ SOURCE;
 		$sql_table .= "creado datetime, \n";
 		$sql_table .= "actualizado datetime, \n";
 		$sql_table .= "PRIMARY KEY (" . $t1 . "_id," . $t2 . "_id) \n";
-		$sql_table .= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8;";
+		$sql_table .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 		$archivo = fopen("../db/$table_name.sql", 'w') or die("No se pudo crear el archivo $recurso.sql");
 		fwrite($archivo, $sql_table);
 		fclose($archivo);       
