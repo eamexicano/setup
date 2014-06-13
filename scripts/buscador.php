@@ -98,32 +98,19 @@ SOURCE;
 
 ?> 
 	<h1>¡Hecho!</h1>
-	<p>Se crearó el siguiente archivo:</p>
+	<p>Se creó el siguiente archivo:</p>
 	<ul>
 		<li>
 			<em>buscador.php</em>
 			<p>
-				Formulario de búsquedas.<br> 
-				Si solo se quiere el formulario  se puede copiar y pegar el código que está dentro de las siguientes etiquetas e incluirlo en otro archivo.<br>
-				Pero el formulario sigue haciendo la consulta y mostrando los resultados encontrados en el archivo resultados.php				
-		  	</p>
-			<p>&lt;!-- Formulario de búsqueda --&gt;</p>
+        En este archivo se encuentra tanto el formulario de búsqueda como las consultas que muestran el resultado.<br>
+        Si no se realiza una búsqueda (que no exista término de búsqueda) se muestran todos los registros de la tabla. <br>
+        Si existe un término de búsqueda, la búsqueda se realiza en la columna especificada. Se espera que la columna<br>
+        contenga el término, es decir, no importa cuántos caracteres existan antes o después del término y qué caracteres sean,<br>
+        mientras el término exista.
+      </p>
+
 		</li>
-		<li>
-			<em>resultados.php</em>
-			<p>
-				Archivo que realiza una búsqueda en la tabla y campo que se especificaron en el formulario.<br>
-				Muestra los resultados en forma de vínculo.<br>
-				<b>Nota</b><br>
-				En esta página se muestran todos los resultados que se encuentran, no tiene un paginador incluido.<br>
-				El vínculo no está asociado a una acción o página para visualizar el contenido de un resultado en particular.<br >
-			</p>          
-			<p>
-				Si solo se quiere la consulta y muestra de resultados se puede copiar y pegar el código que está dentro de las siguientes etiquetas e incluirlo en otro archivo.<br>
-				&lt;!-- Resultados de Búsqueda --&gt; <br>
-				Si se hace esto hay que actualizar el atributo "action" del formulario para que envíe los valores a otro archivo.
-			</p>
-		 </li>
 	</ul>
 
 <?php 
