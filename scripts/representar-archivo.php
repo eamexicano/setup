@@ -532,7 +532,7 @@ $sql_table .= "file_size int(11), \n";
 $sql_table .= "creado datetime, \n";
 $sql_table .= "actualizado datetime, \n";
 $sql_table .= "PRIMARY KEY (id) \n";
-$sql_table .= ") ENGINE=InnoDB DEFAULT CHARSET=UTF8;";
+$sql_table .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
 	$archivo = fopen("../db/$recurso.sql", 'w') or die("No se pudo crear el archivo $recurso.sql");
 	fwrite($archivo, $sql_table);

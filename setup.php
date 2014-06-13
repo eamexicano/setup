@@ -168,8 +168,8 @@ $setup_file = <<< SETUP_FILE
       printf("Error de conexión: %s\n", mysqli_connect_error());
       exit();
   }  
-  \$conexion->query("SET NAMES UTF8");
-  \$conexion->query("SET CHARACTER SET utf8");
+  \$conexion->query("SET NAMES utf8mb4");
+  \$conexion->query("SET CHARACTER SET utf8mb4");
 ?>
 SETUP_FILE;
 	$archivo = fopen("$proyecto/config/conexion.php", 'w') or die("No se pudo crear el archivo conexion.php");
@@ -178,7 +178,7 @@ SETUP_FILE;
 // CREAR BD
 $setup_file = <<< SETUP_FILE
 CREATE DATABASE $proyecto 
-DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 SETUP_FILE;
 	$archivo = fopen("$proyecto/db/$proyecto.sql", 'w') or die("No se pudo crear el archivo $proyecto.sql");
 	fwrite($archivo, $setup_file);
