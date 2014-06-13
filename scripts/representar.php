@@ -83,6 +83,7 @@ SOURCE;
 $new_input .= $tmp_new_input;
                 /* new input*/
 $tmp_edit_input = <<<SOURCE
+\n<?php
 			 \$attr_id = \$resultado['$attr_id'];
 				\$query = "SELECT * FROM $tabla";
 				\$select = \$conexion->query(\$query);	
@@ -100,6 +101,7 @@ para que cuando se mande llamar el formulario de edición aparezca como seleccio
 					echo ">\$selected[1]</option>";
 				} 
 				echo "</select><br>";
+?>\n        
 SOURCE;
 $edit_input .= $tmp_edit_input;				
 			} else {
