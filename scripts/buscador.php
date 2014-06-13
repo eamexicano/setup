@@ -39,11 +39,49 @@ $setup_file = <<<SOURCE
 			</div>
 			<div class='content'>
 				<!-- Formulario de búsqueda -->
-        <form action='resultados.php' method='get'>
-					<input type='text' name='q' /><br />
+        <form action='buscador.php' method='get'>
+          <?php if (isset(\$_GET['q'])) { ?>
+					<input type='text' name='q' value='<?php echo \$_GET["q"]?>'><br />
+          <?php } else { ?>
+            <input type='text' name='q'><br>    
+          <?php } ?> 
 					<input type='submit' value='Buscar' />
 				</form>
 				<!-- Formulario de búsqueda -->
+        
+  			<!-- Consulta  -->
+  			<?php
+        
+        if (isset(\$_GET['q'])) {
+          \$q = \$_GET['q'];          
+          \$query = "SELECT * FROM $tabla WHERE $atributo LIKE '%\$q%'";
+          if (\$stmt = \$conexion->prepare(\$query)) {
+            \$stmt->bind_param("s", \$q);
+            \$stmt->execute();
+            \$resultados = \$stmt->get_result();
+
+    				while (\$resultado = \$resultados->fetch_array()) { 
+              echo "<a href='#'>" . \$resultado['$atributo'] . "</a><br />";
+    				} 
+            \$stmt->close();
+          }
+        } else {
+          \$query = "SELECT * FROM $tabla";          
+          if (\$stmt = \$conexion->prepare(\$query)) {
+            \$stmt->execute();
+            \$resultados = \$stmt->get_result();
+
+    				while (\$resultado = \$resultados->fetch_array()) { 
+              echo "<a href='#'>" . \$resultado['$atributo'] . "</a><br />";
+    				} 
+            \$stmt->close();
+          }
+        }
+        \$conexion->close();
+
+  			?>
+  			<!-- Consulta  -->        
+        
 			</div>
 			<div class='footer'>
 				<p>
@@ -58,46 +96,9 @@ SOURCE;
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 
-$setup_file = <<<SOURCE
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset='utf-8' />
-		<link rel="stylesheet" href="assets/css/$projectName.css" type="text/css" />
-	</head>
-	<body>
-		<?php require 'config/conexion.php'; ?>
-		<div class='container'>
-			<div class='header'>
-				<h1>Resultados de Búsqueda</h1>
-			</div>
-			<div class='content'>
-			<!-- Resultados de Búsqueda -->
-			<?php
-			\$q = \$_GET['q'];
-			\$query = "SELECT * FROM $tabla WHERE $atributo LIKE '%\$q%'";
-			\$resultados = \$conexion->query(\$query);
-			while (\$resultado = \$resultados->fetch_array()) { 
-				echo "<a href='#'>" . \$resultado['$atributo'] . "</a><br />";
-			}				
-			?>
-			<!-- Resultados de Búsqueda -->
-			</div>
-			<div class='footer'>
-				<p>
-					&copy;
-				</p>
-			</div>
-		</div>
-	</body>
-</html>
-SOURCE;
-	$archivo = fopen("../resultados.php", 'w') or die("No se pudo crear el archivo resultados.php");
-	fwrite($archivo, $setup_file);
-	fclose($archivo);   
 ?> 
 	<h1>¡Hecho!</h1>
-	<p>Se crearon dos archivos:</p>
+	<p>Se crearó el siguiente archivo:</p>
 	<ul>
 		<li>
 			<em>buscador.php</em>
