@@ -21,31 +21,18 @@
 				<h1>Union</h1>
 				<p>
 					Representación de una relación M:M entre dos tablas.<br>
-					Se va a crear una tabla de unión - join_table - que contiene los ids de la primer y segunda tabla.<br>
-					En la carpeta de la primer tabla se van a almacenar dos archivos.
+					Se va a crear un sql que tiene una tabla de unión - join_table - donde van a estar registrados los ids de la primer y segunda tabla.<br>
+					En la carpeta de la primer tabla se van a crear un arrchivo join_table.html<br>
+          Este archivo va a tener código para modificar los siguientes archivos: <br>
+          new.php, create.php, edit.php, update.php, destroy.php
 				</p>
-				<ol>
-					<li>
-						<p>
-							union.php: Muestra todos los elementos de la tabla2 en un checkbox.<br>
-							Los elementos que se seleccionen van a ser vinculados al elemento seleccionado de la tabla1.<br>
-							
-						</p>
-					</li>
-					<li>
-						<p>
-							update_tabla1_tabla2.php: Se encarga de actualizar los elementos en la BD enviados por el formulario join.php<br>
-							La actualización se realiza en dos pasos.<br>
-							Primero se borran todas las relaciones existentes entre el elemento actual de la tabla1 con TODOS los elementos de la tabla2.<br>
-							Después se vuelven a almacenar los elementos relacionados que fueron enviados en el formulario.<br>
-						</p>
-					</li>
-				</ol>
 				<form action='union.php' method='post'>
 <?php
 	require "../config/conexion.php";
 	$projectName = basename(dirname(dirname(__FILE__)));		
 			if (isset($_POST['join_table'])) {
+      	$css = "<link rel='stylesheet' href='../assets/css/$projectName.css' type='text/css' />";
+
 				// Crear la tabla join
 				$t1 = $_POST['table_1'];
 				$t2 = $_POST['table_2'];
@@ -56,76 +43,146 @@
 				$t2_id = $t2 . "_id";
 
 $setup_file = <<<SOURCE
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset='utf8' />
-	</head>
-	<body>
-		<form action='$form_action' method='post'>
-		<?php
-		  require '../config/conexion.php';
-		 \$id = \$_GET['\$id'];
-
-		 \$checkboxes = "";
-		 \$index = 0;
-		 \$ids = array();
-		
-		\$select_checked = "SELECT $t2_id FROM $table_name WHERE $t1_id = '\$id'";
-		\$checked = \$conexion->query(\$select_checked);
-
-		while(\$id = \$checked->fetch_array()) {
-			\$ids[\$index] = \$id[0];
-			\$index++;
-		}      
-		
-		\$query = "SELECT * FROM $t2";
- 		\$resultado = \$conexion->query(\$query);
-
-		while (\$mostrar = \$resultado->fetch_array()) {
-			\$checkboxes .= "<input type='checkbox' name='$table_name_array' value='\$mostrar[0]'";
-			for (\$i = 0; \$i < count(\$ids); \$i++) {
-				if (\$ids[\$i] == \$mostrar[0]) {
-					\$checkboxes .= "checked";
-				}
-			}
-			\$checkboxes .= ">\$mostrar[1]"; 							
-		} 
-		echo \$checkboxes;		
-?>                 
-		<input type='hidden' name='id' value='<?php echo \$_GET['id'] ?>' />
-		<input type='submit'value='Actualizar' />
-		</form>
-	</body>
-</html>
-SOURCE;
-	$archivo = fopen("../$t1/union.php", 'w') or die("No se pudo crear el archivo join.php");
-	fwrite($archivo, $setup_file);
-	fclose($archivo);       
-
-$setup_file = <<<SOURCE
-	<?php
-	require "../config/conexion.php";
-	\$id = \$_POST['id'];
-	\$query = "DELETE FROM $table_name WHERE $t1_id = '\$id'";
-	\$completado = \$conexion->query(\$query);
-
-	if (isset(\$_POST['$table_name'])) {
-		for(\$i=0; \$i < count(\$_POST['$table_name']); \$i++) {
-			\$query = "INSERT INTO $table_name ($t2_id, $t1_id, creado, actualizado) VALUES ('" . \$_POST['$table_name'][\$i] . "', '\$id', '\$date', '\$date')";
-			\$completado = \$conexion->query(\$query);
-		}
+  <!DOCTYPE html>
+  <html>
+  	<head>
+  		<meta charset='utf8' />
+      $css
+  	</head>
+  	<body>
+    <h1>¡Alto!</h1>
+    <p>
+    Este archivo no se utiliza directamente. Es necesario incluir el código presentado aquí en diferentes archivos. 
+    Y después eliminarlo ( a menos que se quiera conservar como referencia). <br>
+    También se creo un archivo sql con el nombre de las tablas que va a crear una tabla de union - JOIN TABLE - entre las tablas 
+    mencionadas. <br>
+    </p>
+    
+    <p>
+      Incluir el siguiente código en el archivo new.php<br>
+      Va a mostrar todos los registros de la tabla dos como checkbox para que se puedan asociar. 
+    </p>
+    <pre>
+      <code>
+&lt;?php
+ require '../config/conexion.php';
+ \$checkboxes = "";
+ \$query = "SELECT * FROM $t2";
+ \$resultado = \$conexion->query(\$query);
+	while (\$mostrar = \$resultado->fetch_array()) {
+		\$checkboxes .= "&lt;label&gt;&lt;input type='checkbox' name='$table_name_array' value='\$mostrar[0]' &gt; \$mostrar[1] &lt;/label&gt;";
 	}
-	if (\$completado) {
-		header("location: ./index.php");
-	} else {
-		echo "Problema con el query.";
+echo \$checkboxes;		
+?&gt;
+      </code>
+    </pre>
+    
+    <p>
+    Incluir el siguiente código en el archivo create.php<br>
+    Recibe los parámetros de los checkeboxes asociados al registro recién creado para crear<br>
+    nuevos registros en la tabla de unión.
+    </p>
+    
+    <pre>
+      <code>
+    	\$id = \$conexion->insert_id;;
+    	\$query = "DELETE FROM $table_name WHERE $t1_id = '\$id'";
+    	\$completado = \$conexion->query(\$query);
+
+    	if (isset(\$_POST['$table_name'])) {
+    		for(\$i=0; \$i < count(\$_POST['$table_name']); \$i++) {
+    			\$query = "INSERT INTO $table_name ($t2_id, $t1_id, creado, actualizado) VALUES ('" . \$_POST['$table_name'][\$i] . "', '\$id', '\$date', '\$date')";
+    			\$completado = \$conexion->query(\$query);
+    		}
+    	}
+
+      </code>
+    </pre>
+    
+    <p>
+      Incluir en edit.php<br>
+    
+    </p>
+    
+    <pre>
+      <code>
+&lt;?php
+
+\$checkboxes = "";
+\$index = 0;
+\$ids = array();
+
+\$select_checked = "SELECT $t2_id FROM $table_name WHERE $t1_id = '\$id'";
+\$checked = \$conexion->query(\$select_checked);
+
+while(\$related = \$checked->fetch_array()) {
+  \$ids[\$index] = \$related[0];
+  \$index++;
+}      
+
+\$query = "SELECT * FROM $t2";
+\$resultado = \$conexion->query(\$query);
+
+while (\$mostrar = \$resultado->fetch_array()) {
+\$checkboxes .= "&lt;label&gt;&lt;input type='checkbox' name='$table_name_array' value='\$mostrar[0]'";
+for (\$i = 0; \$i < count(\$ids); \$i++) {
+	if (\$ids[\$i] == \$mostrar[0]) {
+		\$checkboxes .= "checked";
 	}
-	?>
+}
+\$checkboxes .= "&gt;\$mostrar[1] &lt;/label&gt;";
+} 
+echo \$checkboxes;		
+?&gt;    
+      </code>
+    </pre>
+    
+    <p>
+      Incluir en update.php<br>    
+    </p>
+    
+    <pre>
+      <code>
+
+\$query = "DELETE FROM $table_name WHERE $t1_id = '\$id'";
+\$completado = \$conexion->query(\$query);
+
+if (isset(\$_POST['$table_name'])) {
+	for(\$i=0; \$i < count(\$_POST['$table_name']); \$i++) {
+		\$query = "INSERT INTO $table_name ($t2_id, $t1_id, creado, actualizado) VALUES ('" . \$_POST['$table_name'][\$i] . "', '\$id', '\$date', '\$date')";
+		\$completado = \$conexion->query(\$query);
+	}
+}
+
+
+      </code>
+    </pre>
+    
+    
+    <p>
+      Incluir en destroy.php<br>    
+    </p>
+    
+    <pre>
+      <code>
+
+\$query = "DELETE FROM $table_name WHERE $t1_id = '\$id'";
+\$completado = \$conexion->query(\$query);
+
+      </code>
+    </pre>
+    
+    
+  	</body>
+  </html>
+
+
 SOURCE;
-		$archivo = fopen("../$t1/$form_action", 'w') or die("No se pudo crear el archivo update_join.php");
-		fwrite($archivo, $setup_file);
-		fclose($archivo);       
+$archivo = fopen("../$t1/join_table.html", 'w') or die("No se pudo crear el archivo update_join.php");
+fwrite($archivo, $setup_file);
+fclose($archivo);       
+
+
 		$sql_table = "USE $projectName;\n";          
 		$sql_table .= "CREATE TABLE IF NOT EXISTS $table_name (\n";
 		$sql_table .= $t1 . "_id int(11) NOT NULL,\n";
@@ -140,9 +197,13 @@ SOURCE;
 		if (exec('mysql -u root < ../db/$recurso.sql')) {
 			echo "<b>$table_name</b>";
 			echo "<p>Listo para utilizar.</p>";
+      echo "<h4>Importante</h4>";
+      echo "<p>Lee el archivo join_table.html que se encuentra en la carpeta $t1</p>";
 		}  else {
 			echo "<b>$table_name</b>";
 			echo "<p>Importa $proyecto/db/$table_name.sql a MySQL.</p>";
+      echo "<h4>Importante</h4>";
+      echo "<p>Lee el archivo join_table.html que se encuentra en la carpeta $t1</p>";      
 		}
 	}
 	else {
