@@ -159,7 +159,7 @@ $setup_file = <<<SOURCE
           echo "<form action='destroy.php' method='post' class='linkDisplay'><input type='hidden' name='id' value='" . \$resultado['id'] . "'/><input type='submit' value='Eliminar' class='linkDisplay' /></form> ]";
           echo "<br>";
 				} 
-        \$statement->close();
+        \$stmt->close();
       } 
       \$conexion->close();
       ?>

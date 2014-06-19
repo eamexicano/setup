@@ -163,7 +163,7 @@ $setup_file = <<<SOURCE
           echo "<a href='download.php?id=" . \$resultado['id'] . "'>Descargar</a> ]";
           echo "<br>";
 				} 
-        \$statement->close();
+        \$stmt->close();
       } 
       \$conexion->close();
       ?>
