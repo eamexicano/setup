@@ -34,8 +34,17 @@
 		$htmlContent = false;
 	}
 
+	/* pagination */
+	if (isset($_POST['pagination']) && ($_POST['pagination'] == '1' || $_POST['pagination'] == 'on')) {
+		$paginate = true;
+	} else {
+		$paginate = false;
+	}
+
+
 	unset($_POST['htmlContent']);
-	
+	unset($_POST['pagination']);
+  
 	echo "Creando directorios para $recurso <br>\n";
  	mkdir("../$recurso", 0777);
 	chmod("../$recurso", 0777);
@@ -131,7 +140,66 @@ $edit_input .= $tmp_edit_input;
         
 		}	   		
 	}	
-    
+
+if ($paginate) {
+$setup_file = <<<SOURCE
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		$css
+	</head>
+	<body>
+		<?php 
+      require '../config/conexion.php'; 
+      require '../lib/paginador.php';      
+    ?>
+		<div class='container'>
+			<div class='header'>
+				<h1><a href='../index.php'>$recurso</a></h1>
+			</div>
+      [ <a href="index.php">Ver todos</a> | <a class='new' href="new.php">Agregar $recurso</a> ]
+			<div class='content'>
+      <?php
+      
+      \$paginador = new Paginador();
+      \$paginador->consulta_total =  "SELECT COUNT(*) AS 'total' FROM $recurso";
+      \$limit = \$paginador->limit(); 
+      \$offset = \$paginador->offset(\$_GET['pagina']);
+      
+      
+      
+      if (\$stmt = \$conexion->prepare("SELECT * FROM $recurso")) {
+        \$stmt->execute();
+        \$resultados = \$stmt->get_result();
+
+				while (\$resultado = \$resultados->fetch_array()) { 
+          $show
+          echo "[ <a href='show.php?id=" . \$resultado['id'] . "'>Ver</a> | ";
+          echo "<a href='edit.php?id=" . \$resultado['id'] . "'>Editar</a> | ";
+          echo "<form action='destroy.php' method='post' class='linkDisplay'><input type='hidden' name='id' value='" . \$resultado['id'] . "'/><input type='submit' value='Eliminar' class='linkDisplay' /></form> ]";
+          echo "<br>";
+				} 
+        \$paginador->paginar(\$conexion, \$_GET['pagina']);
+        \$stmt->close();
+      } 
+      \$conexion->close();
+      ?>
+			</div>
+			<div class='footer'>
+				<p>
+					&copy; $projectName
+				</p>
+			</div>
+		</div>
+			$script	
+	</body>
+</html>
+SOURCE;
+	$archivo = fopen("../$recurso/index.php", 'w') or die("No se pudo crear el archivo index.php");
+	fwrite($archivo, $setup_file);
+	fclose($archivo);    
+} else {
 $setup_file = <<<SOURCE
 <!DOCTYPE html>
 <html>
@@ -176,7 +244,8 @@ $setup_file = <<<SOURCE
 SOURCE;
 	$archivo = fopen("../$recurso/index.php", 'w') or die("No se pudo crear el archivo index.php");
 	fwrite($archivo, $setup_file);
-	fclose($archivo);       
+	fclose($archivo);     
+}   
 
 $setup_file = <<<SOURCE
 <!DOCTYPE html>
@@ -486,6 +555,7 @@ $sql_table .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 			</div>
 			<input type='button' id='addAttribute' value='Agregar atributo' /><br>
 			<input type='checkbox' name='htmlContent' />Seleccionar si se quiere almacenar contenido en HTML / CSS / JS<br>			
+			<input type='checkbox' name='pagination' />Incluir paginación (archivo index.php).<br>
 			<input type='submit' value='Crear archivos' />
 		</form>
 
