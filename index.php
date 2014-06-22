@@ -26,6 +26,7 @@ if (isset($_POST['proyecto'])) {
 	mkdir("$proyecto/config", 0777, true);
 	mkdir("$proyecto/scripts", 0777, true);
 	mkdir("$proyecto/db", 0777, true);
+	mkdir("$proyecto/lib", 0777, true);  
 	mkdir("$proyecto/assets", 0777, true);
 	mkdir("$proyecto/assets/css", 0777, true);
 	mkdir("$proyecto/assets/js", 0777, true);
@@ -35,6 +36,7 @@ if (isset($_POST['proyecto'])) {
 	chmod("$proyecto/config", 0777);
 	chmod("$proyecto/scripts", 0777);
 	chmod("$proyecto/db", 0777);
+	chmod("$proyecto/lib", 0777);  
 	chmod("$proyecto/assets", 0777);
 	chmod("$proyecto/assets/css", 0777);
 	chmod("$proyecto/assets/js", 0777);
@@ -139,6 +141,60 @@ SETUP_FILE;
 	$archivo = fopen("$proyecto/index.html", 'w') or die('No se pudo crear el archivo index.html'); 
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
+
+$setup_file = <<<SETUP_FILE
+<?php
+
+class Paginador {
+  public \$consulta_total;  
+  const REGISTROS_POR_PAGINA = 5;
+
+  function limit() {
+    return self::REGISTROS_POR_PAGINA;
+  }
+
+  function offset(\$pagina) {  
+    return self::REGISTROS_POR_PAGINA * (\$this->pagina_actual(\$pagina) - 1);
+  }  
+
+  function pagina_actual(\$pagina_actual) {
+    if (isset(\$pagina_actual)) {
+      \$pagina = \$pagina_actual; 
+    } else {
+      \$pagina = 1; 
+    }  
+    return \$pagina;
+  }
+
+  function paginas_totales(\$con) {
+    \$resultados = \$con->query(\$this->consulta_total);
+    \$numero = \$resultados->fetch_array();
+    return ceil(\$numero['total'] / self::REGISTROS_POR_PAGINA);  
+  }
+
+  function paginar(\$con, \$pagina) {
+    \$paginacion = "";
+    \$paginacion .= "<ul class='paginacion'>";
+    \$total = \$this->paginas_totales(\$con);
+    for (\$i=1; \$i < \$total + 1; \$i++) {
+      if (\$i == \$this->pagina_actual(\$pagina)) {
+        \$paginacion .= "<li><a class='actual' href='index.php?pagina=" . \$i. "'>" . \$i . "</a></li>";
+      } else {
+        \$paginacion .= "<li><a href='index.php?pagina=" . \$i. "'>" . \$i . "</a></li>";
+      }
+    }  
+    \$paginacion .= "</ul>";    
+    echo \$paginacion;
+  }
+
+}
+?>
+SETUP_FILE;
+	$archivo = fopen("$proyecto/lib/paginador.php", 'w') or die('No se pudo crear el archivo paginador.php');
+	fwrite($archivo, $setup_file);
+	fclose($archivo);
+// root
+  
 // CSS
 $setup_file = <<< SETUP_FILE
 body {font-family: 'helvetica neue', helvetica, sans-serif; font-size: 12px; line-height: 1.5; width: 980px; margin: 0 auto; color: #333;}
@@ -148,6 +204,13 @@ body {font-family: 'helvetica neue', helvetica, sans-serif; font-size: 12px; lin
 .footer {height: 40px; border-top: 1px solid #ccc; text-align: right; color: #777;}
 /* Muestra los botones del formulario como vínculos */
 .linkDisplay {border: none; padding: 0; margin: 0; color: #00E; font-size: inherit; font-family: inherit; text-decoration: underline; background: transparent; display: inline;}
+
+/* Paginación */
+ul.paginacion { text-align:center; display: block; clear: both; float: none; height: 20px; line-height: 20px;}
+ul.paginacion li { display:inline-block; padding: 5px; float: left;  height: 20px; width: 20px; line-height: 20px;}
+ul.paginacion a { display:block; text-decoration:none; width: 100%; height: 100%;}
+ul.paginacion a:hover, ul.paginacion a.actual { text-decoration: underline; }
+
 SETUP_FILE;
 	$archivo = fopen("$proyecto/assets/css/$proyecto.css", 'w') or die("No se pudo crear el archivo $proyecto.css");
 	fwrite($archivo, $setup_file);
