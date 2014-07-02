@@ -133,22 +133,28 @@ session_start();
 require "config/conexion.php";
 
 if (isset(\$_POST['sesion'])) {
-		\$email = \$_POST['email'];
-		\$password = \$_POST['password'];
+	\$email = \$_POST['email'];
+	\$password = \$_POST['password'];
+	\$query = "SELECT id, admin FROM usuarios WHERE email = '?' AND password = SHA2('?', 256)";
 
-		\$query = "SELECT id, admin FROM usuarios WHERE email = '\$email' AND password = SHA2('\$password', 256)";
-		\$resultado = \$conexion->query(\$query);	
+  if (\$stmt = \$conexion->prepare(\$query)) {
+    \$stmt->bind_param("ss", \$email, \$password);
+    \$stmt->execute();
+    \$resultados = \$stmt->get_result();
 
-		while (\$usuario = \$resultado->fetch_array()) {
-			\$_SESSION['uid'] = \$usuario['id'];
-			\$_SESSION['admin'] = \$usuario['admin'];
-		} 	
+  	while (\$usuario = \$resultados->fetch_array()) { 
+  		\$_SESSION['uid'] = \$usuario['id'];
+  		\$_SESSION['admin'] = \$usuario['admin'];
+  	}    
+    \$stmt->close();
+  }
 
-		if (\$_SESSION['uid']) {
-				header("location: home.php");
-		} else {
-			\$msg = "El usuario o la contraseña no son correctas. Intenta de nuevo.";
-		}
+	if (\$_SESSION['uid']) {
+			header("location: home.php");
+	} else {
+		\$msg = "El usuario o la contraseña no son correctas. Intenta de nuevo.";
+	}
+  \$conexion->close();
 }                                               
 
 ?>
