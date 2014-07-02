@@ -111,14 +111,19 @@ require "config/conexion.php";
 \$date = date('Y-m-d H:i:s');
 
 if (\$password == \$confirmacion) {
-	\$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('\$nombre', '\$email', SHA2('\$password', 256), '\$date', '\$date')";
-	\$completado = \$conexion->query(\$query);
-	\$_SESSION['uid'] = \$conexion->insert_id;
-		header("location: home.php");
+    \$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('?', '?', SHA2('?', 256), '?', '?')";
+  if (\$stmt = \$conexion->prepare(\$query)) {
+    \$stmt->bind_param('sssss', '\$nombre', '\$email', '\$password', '\$date', '\$date');
+    \$completado = \$stmt->execute();          
+    if (\$completado) {
+      header("location: home.php");      
+    }
+    \$stmt->close();      
+  }
 } else {
 		header("location: index.php");
-}                                      
-
+}
+  \$conexion->close();
 ?> 
 SOURCE;
 	$archivo = fopen("../cuenta.php", 'w') or die("No se pudo crear el archivo destroy.php");
