@@ -84,7 +84,7 @@ $tmp_new_input = <<<SOURCE
   echo "<select name='$elem[$key]'>";
   echo "<option value='0' selected> - Selecciona - </option>";
   while (\$mostrar = \$resultado->fetch_array()) { 
-  	echo "<option value='\$mostrar[0]'>\$mostrar[1]</option>";
+  	echo "<option value='" . \$mostrar['id'] . "'>\$mostrar[1]</option>";
   } 
   echo "</select><br>";
 ?>\n
@@ -100,13 +100,13 @@ $tmp_edit_input = <<<SOURCE
 				echo "<select name='$elem[$key]'>";
 				echo "<option value='0'> - Selecciona - </option>";
 				while (\$selected = \$select->fetch_array()) { 
-					echo "<option value='\$selected[0]'";     
+					echo "<option value='" . \$selected['id'] ."'";     
 /*					
 Se necesita hacer una consulta para obtener el valor almacenado en: $elem[$key]
 Ya sea utilizar ese o almacenarlo en otra variable y sustituirla en el condicional
 para que cuando se mande llamar el formulario de edición aparezca como seleccionada la opción.
 */
-				if (\$attr_id == \$selected[0]) { echo "selected='selected'"; }
+				if (\$attr_id == \$selected['id']) { echo "selected='selected'"; }
 					echo ">\$selected[1]</option>";
 				} 
 				echo "</select><br>";
@@ -166,8 +166,6 @@ $setup_file = <<<SOURCE
       \$paginador->consulta_total =  "SELECT COUNT(*) AS 'total' FROM $recurso";
       \$limit = \$paginador->limit(); 
       \$offset = \$paginador->offset(\$_GET['pagina']);
-      
-      
       
       if (\$stmt = \$conexion->prepare("SELECT * FROM $recurso")) {
         \$stmt->execute();
