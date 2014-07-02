@@ -140,15 +140,11 @@ if (isset(\$_POST['sesion'])) {
 		\$resultado = \$conexion->query(\$query);	
 
 		while (\$usuario = \$resultado->fetch_array()) {
-			if (isset(\$usuario)) {
-				\$usuario_id =  \$usuario['id']; 
-				\$rol_id = \$usuario['admin']; // Si es administrador nos va a dar un 1, si es usuario normal es 0
-			} 
+			\$_SESSION['uid'] = \$usuario['id'];
+			\$_SESSION['admin'] = \$usuario['admin'];
 		} 	
 
-		if (\$usuario_id) {
-				\$_SESSION['uid'] = \$usuario_id;
-				\$_SESSION['admin'] = \$rol_id;
+		if (\$_SESSION['uid']) {
 				header("location: home.php");
 		} else {
 			\$msg = "El usuario o la contraseña no son correctas. Intenta de nuevo.";
@@ -206,11 +202,11 @@ if (isset(\$_POST['sesion'])) {
 							<td><input type="text" name="email"></td>
 						</tr>
 						<tr>
-							<td><label>Password:</label></td>
+							<td><label>Contraseña:</label></td>
 							<td><input type="password" name="password"></td>
 						</tr>
 						<tr>
-							<td><label>Confirmación de Password:</label></td>
+							<td><label>Confirmación de Contraseña:</label></td>
 							<td><input type="password" name="confirmacion"></td>
 						</tr>
 				</table>
