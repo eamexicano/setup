@@ -582,7 +582,7 @@ SOURCE;
 
 $sql_table = "USE $projectName;\n";          
 $sql_table .= "CREATE TABLE IF NOT EXISTS $recurso (\n";
-$sql_table .= "id int(11) NOT NULL AUTO_INCREMENT,\n";
+$sql_table .= "id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,\n";
 $i = 0;
 foreach ($elem as $key => $value) { 
 	$i++;
