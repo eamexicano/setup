@@ -243,11 +243,11 @@ SOURCE;
 $setup_file = <<<SOURCE
 USE $projectName;
 CREATE TABLE IF NOT EXISTS usuarios (
-id int(11) NOT NULL AUTO_INCREMENT,
+id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 nombre varchar(255) NOT NULL,
 email varchar(255) NOT NULL,
 password varchar(255) NOT NULL,
-admin int(11) NOT NULL,
+admin int(11) UNSIGNED NOT NULL,
 creado datetime,
 actualizado datetime,
 PRIMARY KEY (id)
