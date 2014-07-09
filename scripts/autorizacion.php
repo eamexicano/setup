@@ -114,6 +114,7 @@ SOURCE;
 $setup_file = <<<SOURCE
 <?php
 session_start();
+require "lib/salt.php";
 require "config/conexion.php";
 
 \$nombre = \$_POST['nombre'];
@@ -123,9 +124,11 @@ require "config/conexion.php";
 \$date = date('Y-m-d H:i:s');
 
 if (\$password == \$confirmacion) {
-    \$query = "INSERT INTO usuarios (nombre, email, password, creado, actualizado) VALUES ('?', '?', SHA2('?', 256), '?', '?')";
+    \$encrypted_password = hash('sha256', \$password . SALT);
+    \$is_admin = 0;
+    \$query = "INSERT INTO usuarios (nombre, email, password, admin, creado, actualizado) VALUES (?, ?, ?, ?, ?, ?)";
   if (\$stmt = \$conexion->prepare(\$query)) {
-    \$stmt->bind_param('sssss', '\$nombre', '\$email', '\$password', '\$date', '\$date');
+    \$stmt->bind_param('ssssss', \$nombre, \$email, \$encrypted_password, \$is_admin, \$date, \$date);
     \$completado = \$stmt->execute();          
     if (\$completado) {
       header("location: home.php");      
@@ -144,108 +147,111 @@ SOURCE;
 
 // Sesión
 $setup_file = <<<SOURCE
-<?php
-session_start();
-\$msg = "";
-require "config/conexion.php";
+  <?php
+  session_start();
+  require "lib/salt.php";
+  require "config/conexion.php";
 
-if (isset(\$_POST['sesion'])) {
-	\$email = \$_POST['email'];
-	\$password = \$_POST['password'];
-	\$query = "SELECT id, admin FROM usuarios WHERE email = '?' AND password = SHA2('?', 256)";
+  \$msg = "";
 
-  if (\$stmt = \$conexion->prepare(\$query)) {
-    \$stmt->bind_param("ss", \$email, \$password);
-    \$stmt->execute();
-    \$resultados = \$stmt->get_result();
+  if (isset(\$_POST['sesion'])) {
+  	\$email = \$_POST['email'];
+  	\$password = \$_POST['password'];
+    \$encrypted_password = hash('sha256', \$password . SALT);  
+  	\$query = "SELECT id, admin FROM usuarios WHERE email = ? AND password = ?";
 
-  	while (\$usuario = \$resultados->fetch_array()) { 
-  		\$_SESSION['uid'] = \$usuario['id'];
-  		\$_SESSION['admin'] = \$usuario['admin'];
-  	}    
-    \$stmt->close();
-  }
+    if (\$stmt = \$conexion->prepare(\$query)) {
+      \$stmt->bind_param("ss", \$email, \$encrypted_password);
+      \$stmt->execute();
+      \$resultados = \$stmt->get_result();
 
-	if (\$_SESSION['uid']) {
-			header("location: home.php");
-	} else {
-		\$msg = "El usuario o la contraseña no son correctas. Intenta de nuevo.";
-	}
-  \$conexion->close();
-}                                               
+    	while (\$usuario = \$resultados->fetch_array()) { 
+    		\$_SESSION['uid'] = \$usuario['id'];
+    		\$_SESSION['admin'] = \$usuario['admin'];
+    	}    
+      \$stmt->close();
+    }
 
-?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset='utf-8' />
-		<link rel="stylesheet" href="assets/css/$projectName.css" type="text/css" />
-	</head>
-	<body>
-		<div class='container'>
-			<div class='header'>
-				<h1><a href='index.php'>$projectName</a></h1>
-			</div>
+  	if (\$_SESSION['uid']) {
+  			header("location: home.php");
+  	} else {
+  		\$msg = "El usuario o la contraseña no son correctas. Intenta de nuevo.";
+  	}
+    \$conexion->close();
+  }                                               
 
-			<div class='content'>
-				<h3>Autorización</h3>
-				<fieldset>
-					<legend>Iniciar sesión</legend>
-				<form action="iniciar_sesion.php" method="post" accept-charset="utf-8">
-					<?php
-						if (\$msg <> "")  {
-							echo "<div style='width: 100%; display: block; height: 50px; color: red'>";
-							echo \$msg;
-							echo "</div>";
-						}
-					?>
-					<table>
-						<tr>
-							<td><label>email</label></td>
-							<td><input type="text" name="email"></td>
-						</tr>
-						<tr>
-							<td><label>password</label></td>
-							<td><input type="password" name="password"></td>
-						</tr>
-					</table>
-					<input type="submit" value="Iniciar sesión" name='sesion' />
-				</form>
-				</fieldset>
-				<fieldset>
-					<legend>Crear cuenta</legend>
-				<form action="cuenta.php" method="post" accept-charset="utf-8">
-					<table>
-						<tr>
-							<td><label>Nombre Completo:</label></td>
-							<td><input type="text" name="nombre"></td>
-						</tr>
-						<tr>
-							<td><label>Email:</label></td>
-							<td><input type="text" name="email"></td>
-						</tr>
-						<tr>
-							<td><label>Contraseña:</label></td>
-							<td><input type="password" name="password"></td>
-						</tr>
-						<tr>
-							<td><label>Confirmación de Contraseña:</label></td>
-							<td><input type="password" name="confirmacion"></td>
-						</tr>
-				</table>
-								<input type="submit" value="Crear cuenta">
-				</form>
-				</fieldset>
-			</div>
-			<div class='footer'>
-				<p>
-					&copy; $projectName
-				</p>
-			</div>
-		</div>
-		<script src='assets/js/$proyectName.js'></script>
-	</body>
-</html>
+  ?>
+  <!DOCTYPE html>
+  <html>
+  	<head>
+  		<meta charset='utf-8' />
+  		<link rel="stylesheet" href="assets/css/$projectName.css" type="text/css" />
+  	</head>
+  	<body>
+  		<div class='container'>
+  			<div class='header'>
+  				<h1><a href='index.php'>$projectName</a></h1>
+  			</div>
+
+  			<div class='content'>
+  				<h3>Autorización</h3>
+  				<fieldset>
+  					<legend>Iniciar sesión</legend>
+  				<form action="iniciar_sesion.php" method="post" accept-charset="utf-8">
+  					<?php
+  						if (\$msg <> "")  {
+  							echo "<div style='width: 100%; display: block; height: 50px; color: red'>";
+  							echo \$msg;
+  							echo "</div>";
+  						}
+  					?>
+  					<table>
+  						<tr>
+  							<td><label>email</label></td>
+  							<td><input type="text" name="email"></td>
+  						</tr>
+  						<tr>
+  							<td><label>password</label></td>
+  							<td><input type="password" name="password"></td>
+  						</tr>
+  					</table>
+  					<input type="submit" value="Iniciar sesión" name='sesion' />
+  				</form>
+  				</fieldset>
+  				<fieldset>
+  					<legend>Crear cuenta</legend>
+  				<form action="cuenta.php" method="post" accept-charset="utf-8">
+  					<table>
+  						<tr>
+  							<td><label>Nombre Completo:</label></td>
+  							<td><input type="text" name="nombre"></td>
+  						</tr>
+  						<tr>
+  							<td><label>Email:</label></td>
+  							<td><input type="text" name="email"></td>
+  						</tr>
+  						<tr>
+  							<td><label>Contraseña:</label></td>
+  							<td><input type="password" name="password"></td>
+  						</tr>
+  						<tr>
+  							<td><label>Confirmación de Contraseña:</label></td>
+  							<td><input type="password" name="confirmacion"></td>
+  						</tr>
+  				</table>
+  								<input type="submit" value="Crear cuenta">
+  				</form>
+  				</fieldset>
+  			</div>
+  			<div class='footer'>
+  				<p>
+  					&copy; $projectName
+  				</p>
+  			</div>
+  		</div>
+  		<script src='assets/js/$proyectName.js'></script>
+  	</body>
+  </html>
 SOURCE;
 	$archivo = fopen("../iniciar_sesion.php", 'w') or die("No se pudo crear el archivo destroy.php");
 	fwrite($archivo, $setup_file);
