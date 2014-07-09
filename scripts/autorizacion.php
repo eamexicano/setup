@@ -26,6 +26,18 @@ if (isset($_POST['autorizacion'])) {
 
 
 $projectName = basename(dirname(dirname(__FILE__)));
+
+// SALT
+$salt = MD5(RAND());
+$setup_file = <<<SOURCE
+<?php 
+  define('SALT', '$salt');
+?>
+SOURCE;
+	$archivo = fopen("../lib/salt.php", 'w') or die("No se pudo crear el archivo salt.php");
+	fwrite($archivo, $setup_file);
+	fclose($archivo);
+  
 // Autenticación
 $setup_file = <<<SOURCE
 <?php session_start();
