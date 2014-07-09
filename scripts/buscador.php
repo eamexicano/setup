@@ -54,9 +54,10 @@ $setup_file = <<<SOURCE
         
         if (isset(\$_GET['q'])) {
           \$q = \$_GET['q'];          
-          \$query = "SELECT * FROM $tabla WHERE $atributo LIKE '%\$q%'";
+          \$query = "SELECT * FROM $tabla WHERE $atributo LIKE ?";
           if (\$stmt = \$conexion->prepare(\$query)) {
-            \$stmt->bind_param("s", \$q);
+            \$search_term = "%$q%";
+            \$stmt->bind_param("s", \$search_term);
             \$stmt->execute();
             \$resultados = \$stmt->get_result();
 
