@@ -102,7 +102,7 @@ $setup_file = <<<SOURCE
 				</p>
 			</div>
 		</div>
-		<script src='assets/js/$proyectName.js'></script>
+		<script src='assets/js/$projectName.js'></script>
 	</body>
 </html> 
 SOURCE;
@@ -249,7 +249,7 @@ $setup_file = <<<SOURCE
   				</p>
   			</div>
   		</div>
-  		<script src='assets/js/$proyectName.js'></script>
+  		<script src='assets/js/$projectName.js'></script>
   	</body>
   </html>
 SOURCE;
