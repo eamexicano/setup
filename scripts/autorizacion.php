@@ -295,7 +295,8 @@ SOURCE;
 		</ul>
 		<h2>Nota</h2>
 		<p>
-			Las contraseñas se van a cifrar con <b>SHA2</b><br> 			
+      Aunque se genera de manera dinámica el valor para la constante SALT - es recomendable modificarlo <b>ANTES</b> de crear usuarios.<br>
+      Una vez que se tengan usuarios lo más probable es que sus contraseñas queden inservibles.<br>
 		</p>
 		   <input type='submit' name='autorizacion' value='Crear Archivos' />
 	</form>
