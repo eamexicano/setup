@@ -270,7 +270,6 @@ creado datetime,
 actualizado datetime,
 PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-INSERT INTO usuarios (nombre, email, `password`, admin, creado, actualizado) VALUES ('admin', 'admin@example.com', SHA2('admin', 256), 1, NOW(), NOW());
 SOURCE;
 	$archivo = fopen("../db/usuarios.sql", 'w') or die("No se pudo crear el archivo destroy.php");
 	fwrite($archivo, $setup_file);
