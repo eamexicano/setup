@@ -47,7 +47,7 @@ if (empty(\$_SESSION['uid'])) {
 } 
 ?>
 SOURCE;
-	$archivo = fopen("../autenticacion.php", 'w') or die("No se pudo crear el archivo destroy.php");
+	$archivo = fopen("../autenticacion.php", 'w') or die("No se pudo crear el archivo autenticacion.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 // Autorización
@@ -59,7 +59,7 @@ if (!isset(\$_SESSION['admin']) || (\$_SESSION['admin'] != 1)) {
 }
 ?>
 SOURCE;
-	$archivo = fopen("../autorizacion.php", 'w') or die("No se pudo crear el archivo destroy.php");
+	$archivo = fopen("../autorizacion.php", 'w') or die("No se pudo crear el archivo autorizacion.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 // Cerrar Sesión
@@ -71,7 +71,7 @@ $setup_file = <<<SOURCE
 	header("location: index.php");
 ?>
 SOURCE;
-	$archivo = fopen("../cerrar_sesion.php", 'w') or die("No se pudo crear el archivo destroy.php");
+	$archivo = fopen("../cerrar_sesion.php", 'w') or die("No se pudo crear el archivo cerrar_sesion.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 // Home
@@ -106,7 +106,7 @@ $setup_file = <<<SOURCE
 	</body>
 </html> 
 SOURCE;
-	$archivo = fopen("../home.php", 'w') or die("No se pudo crear el archivo destroy.php");
+	$archivo = fopen("../home.php", 'w') or die("No se pudo crear el archivo home.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 
@@ -141,7 +141,7 @@ if (\$password == \$confirmacion) {
   \$conexion->close();
 ?> 
 SOURCE;
-	$archivo = fopen("../cuenta.php", 'w') or die("No se pudo crear el archivo destroy.php");
+	$archivo = fopen("../cuenta.php", 'w') or die("No se pudo crear el archivo cuenta.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 
@@ -253,7 +253,7 @@ $setup_file = <<<SOURCE
   	</body>
   </html>
 SOURCE;
-	$archivo = fopen("../iniciar_sesion.php", 'w') or die("No se pudo crear el archivo destroy.php");
+	$archivo = fopen("../iniciar_sesion.php", 'w') or die("No se pudo crear el archivo iniciar_sesion.php");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);
 
@@ -271,7 +271,7 @@ actualizado datetime,
 PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 SOURCE;
-	$archivo = fopen("../db/usuarios.sql", 'w') or die("No se pudo crear el archivo destroy.php");
+	$archivo = fopen("../db/usuarios.sql", 'w') or die("No se pudo crear el archivo usuarios.sql");
 	fwrite($archivo, $setup_file);
 	fclose($archivo);   
 
