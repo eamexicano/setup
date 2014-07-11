@@ -252,6 +252,7 @@ SETUP_FILE;
 		copy("scripts/contacto.php", "$proyecto/scripts/contacto.php");
 		copy("scripts/index.html", "$proyecto/scripts/index.html");    
 		copy("scripts/pluralize.php", "$proyecto/scripts/pluralize.php");
+    copy("scripts/restablecer.php", "$proyecto/scripts/restablecer.php");
 		copy("scripts/representar.php", "$proyecto/scripts/representar.php");
 		copy("scripts/representar-archivo.php", "$proyecto/scripts/representar-archivo.php");
 		copy("scripts/union.php", "$proyecto/scripts/union.php");
