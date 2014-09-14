@@ -438,7 +438,7 @@ if (\$stmt = \$conexion->prepare("UPDATE $recurso SET  $update_attrs actualizado
   \$completado = \$stmt->execute();
   
   if (\$completado === false) {
-    die('Error execute(): ' . htmlspecialchars(\n$completado->error));
+    die('Error execute(): ' . htmlspecialchars(\$completado->error));
   }
   
   
